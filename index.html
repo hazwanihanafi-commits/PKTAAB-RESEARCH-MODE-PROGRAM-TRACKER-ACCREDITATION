@@ -269,7 +269,8 @@ function renderStudents(list){
 }
 
 /* ================= SAVE ================= */
-async function saveLink(btn){
+<script>
+function saveLink(btn){
   const row = btn.closest(".appendix");
   const no = row.querySelector("b").innerText.trim();
   const link = row.querySelector("input").value.trim();
@@ -282,20 +283,25 @@ async function saveLink(btn){
   btn.innerText = "Saving...";
   btn.disabled = true;
 
-  await fetch(APPENDIX_API,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      appendix:no,
-      doc_link:link
+  const url =
+    APPENDIX_API +
+    "?appendix=" + encodeURIComponent(no) +
+    "&status=COMPLETE" +
+    "&doc_link=" + encodeURIComponent(link);
+
+  // 🔥 GUNA GET – TIADA CORS
+  fetch(url)
+    .then(()=> {
+      btn.innerText = "Saved";
+      btn.style.background = "#16a34a";
+      loadDashboard();
     })
-  });
-
-  btn.innerText = "Saved";
-  btn.style.background="#16a34a";
-
-  loadDashboard();
+    .catch(err=>{
+      alert("Failed to save");
+      console.error(err);
+    });
 }
+</script>
 
 /* ================= INIT ================= */
 loadDashboard();
