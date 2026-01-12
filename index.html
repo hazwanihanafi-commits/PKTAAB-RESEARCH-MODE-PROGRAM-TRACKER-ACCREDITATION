@@ -5,110 +5,25 @@
 <title>PPKPK – Programme Accreditation Dashboard</title>
 
 <style>
-body{
-  font-family: Inter, Arial, sans-serif;
-  background:#f6f8fb;
-  margin:0;
-  padding:24px;
-}
-h1{margin-bottom:20px}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
-  gap:20px;
-}
-
-.card{
-  background:white;
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 10px 24px rgba(0,0,0,.08);
-}
-
-.badge{
-  display:inline-block;
-  padding:4px 12px;
-  border-radius:999px;
-  font-size:12px;
-  margin:6px 0;
-}
+body{font-family:Inter,Arial,sans-serif;background:#f6f8fb;margin:0;padding:24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:20px}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 10px 24px rgba(0,0,0,.08)}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px}
 .ready{background:#e6fff0;color:#047857}
 .notready{background:#ffecec;color:#b91c1c}
-
-.tabs{
-  display:flex;
-  gap:16px;
-  margin:12px 0;
-}
-.tab{
-  cursor:pointer;
-  font-weight:600;
-  color:#6b7280;
-}
-.tab.active{
-  color:#2563eb;
-  border-bottom:2px solid #2563eb;
-}
-
+.tabs{display:flex;gap:16px;margin:12px 0}
+.tab{cursor:pointer;font-weight:600;color:#6b7280}
+.tab.active{color:#2563eb;border-bottom:2px solid #2563eb}
 .section{display:none}
 .section.active{display:block}
-
-.progress-ring{
-  width:90px;height:90px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  margin:10px 0;
-  background:#e5e7eb;
-}
-
-/* COPPA */
-.area-box{
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  margin-bottom:12px;
-  overflow:hidden;
-}
-.area-header{
-  background:#f1f5f9;
-  padding:12px 16px;
-  font-weight:600;
-  cursor:pointer;
-  display:flex;
-  justify-content:space-between;
-}
+.progress-ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:#e5e7eb}
+.area-box{border:1px solid #e5e7eb;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.area-header{background:#f1f5f9;padding:12px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between}
 .area-body{display:none;padding:12px}
 .area-box.open .area-body{display:block}
-
-.appendix{
-  display:grid;
-  grid-template-columns:70px 1fr 90px 1fr 70px;
-  gap:8px;
-  align-items:center;
-  font-size:13px;
-  padding:6px 0;
-  border-bottom:1px dashed #eee;
-}
-.appendix:last-child{border-bottom:none}
-
-.appendix input{
-  padding:4px;
-  font-size:12px;
-}
-
-.save{
-  background:#2563eb;
-  color:white;
-  border:none;
-  border-radius:6px;
-  font-size:12px;
-  cursor:pointer;
-  padding:4px 8px;
-}
-
+.appendix{display:grid;grid-template-columns:70px 1fr 90px 1fr 70px;gap:8px;font-size:13px;padding:6px 0}
+.appendix input{font-size:12px;padding:4px}
+.save{background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:12px;padding:4px 8px;cursor:pointer}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{border:1px solid #ddd;padding:6px}
 th{background:#f1f5f9}
@@ -116,85 +31,51 @@ th{background:#f1f5f9}
 </head>
 
 <body>
-
 <h1>📘 PPKPK – Programme Accreditation Dashboard</h1>
 <div id="grid" class="grid"></div>
 
 <script>
-/* ================= CONFIG ================= */
-const STUDENT_API =
-"https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
+const STUDENT_API = "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
+const APPENDIX_API = "https://script.google.com/macros/s/AKfycbzg6BOlxx_WPGIINcn5GvcBFqGZBFoS8pg8lPG8RGrsBQyhjMiXmgnf6PcBYIO2FDifew/exec";
 
-const APPENDIX_API =
-"https://script.google.com/macros/s/AKfycbzg6BOlxx_WPGIINcn5GvcBFqGZBFoS8pg8lPG8RGrsBQyhjMiXmgnf6PcBYIO2FDifew/exec";
-
-/* ================= LOAD ================= */
 async function loadDashboard(){
-  const students = await (await fetch(STUDENT_API)).json();
-  const appendix = await (await fetch(APPENDIX_API)).json();
+  const students = await fetch(STUDENT_API).then(r=>r.json());
+  const appendix = await fetch(APPENDIX_API).then(r=>r.json());
 
   const programmes = {};
-
   students.forEach(r=>{
-    const p = r["ACADEMIC PROGRAM"];
+    const p=r["ACADEMIC PROGRAM"];
     if(!p) return;
-
     if(!programmes[p]){
-      programmes[p]={
-        academic:p,
-        bm:r["PROGRAM AKADEMIK"],
-        mqr:r["NO MQR"],
-        centre:r["PEMILIK PROGRAM"],
-        nec:r["NEC"],
-        ketua:r["KETUA PROGRAM"],
-        team:new Set(),
-        students:[],
-        aktif:0,
-        graduan:0,
-        appendix: appendix
-      };
+      programmes[p]={academic:p,bm:r["PROGRAM AKADEMIK"],mqr:r["NO MQR"],
+        centre:r["PEMILIK PROGRAM"],nec:r["NEC"],ketua:r["KETUA PROGRAM"],
+        team:new Set(),students:[],aktif:0,graduan:0,appendix};
     }
-
     programmes[p].students.push(r);
     if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[p].aktif++;
     if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[p].graduan++;
-
     if(r["PENYELIA UTAMA"] && r["PENYELIA UTAMA"]!==r["KETUA PROGRAM"])
       programmes[p].team.add(r["PENYELIA UTAMA"]);
   });
-
   render(programmes);
 }
 
-/* ================= RENDER ================= */
 function render(programmes){
-  const grid=document.getElementById("grid");
-  grid.innerHTML="";
-
+  const grid=document.getElementById("grid"); grid.innerHTML="";
   Object.values(programmes).forEach(p=>{
-    const completed=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
-    const percent=Math.round((completed/p.appendix.length)*100)||0;
-    const ready=p.graduan>0;
-
-    const card=document.createElement("div");
-    card.className="card";
-
+    const done=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
+    const percent=Math.round(done/p.appendix.length*100)||0;
+    const card=document.createElement("div"); card.className="card";
     card.innerHTML=`
       <h3>${p.academic}</h3>
       <div>${p.bm}</div>
-      <span class="badge ${ready?"ready":"notready"}">${ready?"READY":"NOT READY"}</span>
-
-      <div class="progress-ring"
-        style="background:conic-gradient(#2563eb ${percent}%, #e5e7eb ${percent}%)">
-        ${percent}%
-      </div>
-
+      <span class="badge ${p.graduan>0?"ready":"notready"}">${p.graduan>0?"READY":"NOT READY"}</span>
+      <div class="progress-ring" style="background:conic-gradient(#2563eb ${percent}%,#e5e7eb ${percent}%)">${percent}%</div>
       <div class="tabs">
         <div class="tab active" onclick="switchTab(this)">Overview</div>
         <div class="tab" onclick="switchTab(this)">COPPA / SRR</div>
         <div class="tab" onclick="switchTab(this)">Students</div>
       </div>
-
       <div class="section active">
         <p><b>MQR:</b> ${p.mqr}</p>
         <p><b>Centre:</b> ${p.centre}</p>
@@ -203,39 +84,26 @@ function render(programmes){
         <p><b>Team:</b> ${[...p.team].join(", ")||"-"}</p>
         <p>Aktif: ${p.aktif} | Graduan: ${p.graduan}</p>
       </div>
-
       <div class="section">${renderCoppa(p.appendix)}</div>
-      <div class="section">${renderStudents(p.students)}</div>
-    `;
+      <div class="section">${renderStudents(p.students)}</div>`;
     grid.appendChild(card);
   });
 }
 
-/* ================= TABS ================= */
 function switchTab(el){
   const card=el.closest(".card");
   card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
-
   const idx=[...el.parentNode.children].indexOf(el);
-  card.querySelectorAll(".section").forEach((s,i)=>{
-    s.classList.toggle("active",i===idx);
-  });
+  card.querySelectorAll(".section").forEach((s,i)=>s.classList.toggle("active",i===idx));
 }
 
-/* ================= COPPA ================= */
 function renderCoppa(list){
-  const g={};
-  list.forEach(a=>{
-    if(!g[a.APPENDIX]) g[a.APPENDIX]=[];
-    g[a.APPENDIX].push(a);
-  });
-
+  const g={}; list.forEach(a=>(g[a.APPENDIX]=g[a.APPENDIX]||[]).push(a));
   return Object.keys(g).map(area=>`
     <div class="area-box">
       <div class="area-header" onclick="this.parentNode.classList.toggle('open')">
-        ${area}
-        <span>${g[area].filter(x=>x.STATUS==="COMPLETE").length}/${g[area].length}</span>
+        ${area}<span>${g[area].filter(x=>x.STATUS==="COMPLETE").length}/${g[area].length}</span>
       </div>
       <div class="area-body">
         ${g[area].map(a=>`
@@ -245,69 +113,31 @@ function renderCoppa(list){
             <span>${a.PIC_ROLE}</span>
             <input value="${a.DOC_LINK||""}" placeholder="Paste link">
             <button class="save" onclick="saveLink(this)">Save</button>
-          </div>
-        `).join("")}
+          </div>`).join("")}
       </div>
-    </div>
-  `).join("");
+    </div>`).join("");
 }
 
-/* ================= STUDENTS ================= */
 function renderStudents(list){
-  if(!list.length) return "<p>No student data</p>";
-  return `
-    <table>
-      <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
-      ${list.map(s=>`
-        <tr>
-          <td>${s["NO MATRIK"]||"-"}</td>
-          <td>${s["NAMA PELAJAR"]||"-"}</td>
-          <td>${s["STATUS PENGAJIAN"]||"-"}</td>
-        </tr>
-      `).join("")}
-    </table>`;
+  return `<table><tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>${
+    list.map(s=>`<tr><td>${s["NO MATRIK"]||"-"}</td><td>${s["NAMA PELAJAR"]||"-"}</td><td>${s["STATUS PENGAJIAN"]||"-"}</td></tr>`).join("")
+  }</table>`;
 }
 
-/* ================= SAVE ================= */
-<script>
 function saveLink(btn){
-  const row = btn.closest(".appendix");
-  const appendix = row.querySelector("b").innerText.trim();
-  const link = row.querySelector("input").value.trim();
+  const row=btn.closest(".appendix");
+  const appendix=row.querySelector("b").innerText.trim();
+  const link=row.querySelector("input").value.trim();
+  if(!link) return alert("Paste document link");
 
-  if(!link){
-    alert("Paste document link");
-    return;
-  }
-
-  btn.innerText = "Saving...";
-  btn.disabled = true;
-
-  const url =
-    APPENDIX_API +
-    "?action=save" +
-    "&appendix=" + encodeURIComponent(appendix) +
-    "&doc_link=" + encodeURIComponent(link);
-
-  fetch(url)
-    .then(r => r.json())
-    .then(() => {
-      btn.innerText = "Saved";
-      btn.style.background = "#16a34a";
-      loadDashboard();
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Save failed");
-      btn.innerText = "Save";
-      btn.disabled = false;
-    });
+  btn.innerText="Saving…"; btn.disabled=true;
+  fetch(`${APPENDIX_API}?action=save&appendix=${encodeURIComponent(appendix)}&doc_link=${encodeURIComponent(link)}`)
+    .then(r=>r.json())
+    .then(()=>{btn.innerText="Saved";btn.style.background="#16a34a";loadDashboard();})
+    .catch(()=>{btn.innerText="Save";btn.disabled=false;alert("Save failed");});
 }
-</script>
 
-/* ================= INIT ================= */
 loadDashboard();
 </script>
-
 </body>
 </html>
