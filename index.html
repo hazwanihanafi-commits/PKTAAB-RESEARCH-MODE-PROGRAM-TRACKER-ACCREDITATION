@@ -126,7 +126,7 @@ const STUDENT_API =
 "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
 
 const APPENDIX_API =
-"https://script.google.com/macros/s/AKfycbwm_6F_qHyfKLJKKKkmgged8uPwEj37TvsnhcDuOUnX2HUhWI2Vouk-9DKQZTGqCn7SKw/exec";
+"https://script.google.com/macros/s/AKfycbzg6BOlxx_WPGIINcn5GvcBFqGZBFoS8pg8lPG8RGrsBQyhjMiXmgnf6PcBYIO2FDifew/exec";
 
 /* ================= LOAD ================= */
 async function loadDashboard(){
@@ -269,7 +269,6 @@ function renderStudents(list){
 }
 
 /* ================= SAVE ================= */
-<script>
 function saveLink(btn){
   const row = btn.closest(".appendix");
   const appendix = row.querySelector("b").innerText.trim();
@@ -280,8 +279,8 @@ function saveLink(btn){
     return;
   }
 
-  btn.innerText = "Saving...";
-  btn.disabled = true;
+  btn.innerText="Saving...";
+  btn.disabled=true;
 
   const url =
     APPENDIX_API +
@@ -289,19 +288,17 @@ function saveLink(btn){
     "&doc_link=" + encodeURIComponent(link);
 
   fetch(url)
-    .then(() => {
-      btn.innerText = "Saved";
-      btn.style.background = "#16a34a";
-      loadDashboard(); // refresh progress
+    .then(()=>{
+      btn.innerText="Saved";
+      btn.style.background="#16a34a";
+      loadDashboard();
     })
-    .catch(err => {
-      console.error(err);
+    .catch(()=>{
       alert("Save failed");
-      btn.disabled = false;
-      btn.innerText = "Save";
+      btn.disabled=false;
+      btn.innerText="Save";
     });
 }
-</script>
 
 /* ================= INIT ================= */
 loadDashboard();
