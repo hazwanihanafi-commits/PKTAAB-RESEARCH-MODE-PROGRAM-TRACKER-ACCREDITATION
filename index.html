@@ -269,6 +269,7 @@ function renderStudents(list){
 }
 
 /* ================= SAVE ================= */
+<script>
 function saveLink(btn){
   const row = btn.closest(".appendix");
   const appendix = row.querySelector("b").innerText.trim();
@@ -279,26 +280,30 @@ function saveLink(btn){
     return;
   }
 
-  btn.innerText="Saving...";
-  btn.disabled=true;
+  btn.innerText = "Saving...";
+  btn.disabled = true;
 
   const url =
     APPENDIX_API +
-    "?appendix=" + encodeURIComponent(appendix) +
+    "?action=save" +
+    "&appendix=" + encodeURIComponent(appendix) +
     "&doc_link=" + encodeURIComponent(link);
 
   fetch(url)
-    .then(()=>{
-      btn.innerText="Saved";
-      btn.style.background="#16a34a";
+    .then(r => r.json())
+    .then(() => {
+      btn.innerText = "Saved";
+      btn.style.background = "#16a34a";
       loadDashboard();
     })
-    .catch(()=>{
+    .catch(err => {
+      console.error(err);
       alert("Save failed");
-      btn.disabled=false;
-      btn.innerText="Save";
+      btn.innerText = "Save";
+      btn.disabled = false;
     });
 }
+</script>
 
 /* ================= INIT ================= */
 loadDashboard();
