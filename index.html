@@ -272,7 +272,7 @@ function renderStudents(list){
 <script>
 function saveLink(btn){
   const row = btn.closest(".appendix");
-  const no = row.querySelector("b").innerText.trim();
+  const appendix = row.querySelector("b").innerText.trim();
   const link = row.querySelector("input").value.trim();
 
   if(!link){
@@ -285,20 +285,20 @@ function saveLink(btn){
 
   const url =
     APPENDIX_API +
-    "?appendix=" + encodeURIComponent(no) +
-    "&status=COMPLETE" +
+    "?appendix=" + encodeURIComponent(appendix) +
     "&doc_link=" + encodeURIComponent(link);
 
-  // 🔥 GUNA GET – TIADA CORS
   fetch(url)
-    .then(()=> {
+    .then(() => {
       btn.innerText = "Saved";
       btn.style.background = "#16a34a";
-      loadDashboard();
+      loadDashboard(); // refresh progress
     })
-    .catch(err=>{
-      alert("Failed to save");
+    .catch(err => {
       console.error(err);
+      alert("Save failed");
+      btn.disabled = false;
+      btn.innerText = "Save";
     });
 }
 </script>
