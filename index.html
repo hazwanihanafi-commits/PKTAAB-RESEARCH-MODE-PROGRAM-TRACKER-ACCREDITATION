@@ -20,7 +20,7 @@ h1{margin-bottom:20px}
 }
 
 .card{
-  background:#fff;
+  background:white;
   border-radius:16px;
   padding:20px;
   box-shadow:0 10px 24px rgba(0,0,0,.08);
@@ -97,7 +97,6 @@ h1{margin-bottom:20px}
 .appendix input{
   padding:4px;
   font-size:12px;
-  width:100%;
 }
 
 .save{
@@ -110,7 +109,6 @@ h1{margin-bottom:20px}
   padding:4px 8px;
 }
 
-/* Students */
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{border:1px solid #ddd;padding:6px}
 th{background:#f1f5f9}
@@ -128,7 +126,7 @@ const STUDENT_API =
 "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
 
 const APPENDIX_API =
-"https://script.google.com/macros/s/AKfycbzzeBNKY2UZ8eqfhNmQoO1yLvbZI3WuPB8CSrTgDjSefCMLA1hDm_c9XZCtUZVac7Jz/exec";
+"https://script.google.com/macros/s/AKfycbwm_6F_qHyfKLJKKKkmgged8uPwEj37TvsnhcDuOUnX2HUhWI2Vouk-9DKQZTGqCn7SKw/exec";
 
 /* ================= LOAD ================= */
 async function loadDashboard(){
@@ -153,7 +151,7 @@ async function loadDashboard(){
         students:[],
         aktif:0,
         graduan:0,
-        appendix:[]
+        appendix: appendix
       };
     }
 
@@ -165,10 +163,6 @@ async function loadDashboard(){
       programmes[p].team.add(r["PENYELIA UTAMA"]);
   });
 
-  Object.values(programmes).forEach(p=>{
-    p.appendix = appendix;
-  });
-
   render(programmes);
 }
 
@@ -178,7 +172,7 @@ function render(programmes){
   grid.innerHTML="";
 
   Object.values(programmes).forEach(p=>{
-    const completed=p.appendix.filter(a=>a.DOC_LINK).length;
+    const completed=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
     const percent=Math.round((completed/p.appendix.length)*100)||0;
     const ready=p.graduan>0;
 
@@ -188,12 +182,10 @@ function render(programmes){
     card.innerHTML=`
       <h3>${p.academic}</h3>
       <div>${p.bm}</div>
-      <span class="badge ${ready?"ready":"notready"}">
-        ${ready?"READY":"NOT READY"}
-      </span>
+      <span class="badge ${ready?"ready":"notready"}">${ready?"READY":"NOT READY"}</span>
 
       <div class="progress-ring"
-        style="background:conic-gradient(#2563eb ${percent}%,#e5e7eb ${percent}%)">
+        style="background:conic-gradient(#2563eb ${percent}%, #e5e7eb ${percent}%)">
         ${percent}%
       </div>
 
@@ -243,7 +235,7 @@ function renderCoppa(list){
     <div class="area-box">
       <div class="area-header" onclick="this.parentNode.classList.toggle('open')">
         ${area}
-        <span>${g[area].filter(x=>x.DOC_LINK).length}/${g[area].length}</span>
+        <span>${g[area].filter(x=>x.STATUS==="COMPLETE").length}/${g[area].length}</span>
       </div>
       <div class="area-body">
         ${g[area].map(a=>`
@@ -264,16 +256,16 @@ function renderCoppa(list){
 function renderStudents(list){
   if(!list.length) return "<p>No student data</p>";
   return `
-  <table>
-    <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
-    ${list.map(s=>`
-      <tr>
-        <td>${s["NO MATRIK"]||"-"}</td>
-        <td>${s["NAMA PELAJAR"]||"-"}</td>
-        <td>${s["STATUS PENGAJIAN"]||"-"}</td>
-      </tr>
-    `).join("")}
-  </table>`;
+    <table>
+      <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
+      ${list.map(s=>`
+        <tr>
+          <td>${s["NO MATRIK"]||"-"}</td>
+          <td>${s["NAMA PELAJAR"]||"-"}</td>
+          <td>${s["STATUS PENGAJIAN"]||"-"}</td>
+        </tr>
+      `).join("")}
+    </table>`;
 }
 
 /* ================= SAVE ================= */
@@ -287,17 +279,21 @@ async function saveLink(btn){
     return;
   }
 
-  btn.innerText="Saving...";
-  btn.disabled=true;
+  btn.innerText = "Saving...";
+  btn.disabled = true;
 
   await fetch(APPENDIX_API,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ appendix:no, doc_link:link })
+    body:JSON.stringify({
+      appendix:no,
+      doc_link:link
+    })
   });
 
-  btn.innerText="Saved";
+  btn.innerText = "Saved";
   btn.style.background="#16a34a";
+
   loadDashboard();
 }
 
