@@ -124,18 +124,43 @@ function renderStudents(list){
   }</table>`;
 }
 
+<script>
 function saveLink(btn){
-  const row=btn.closest(".appendix");
-  const appendix=row.querySelector("b").innerText.trim();
-  const link=row.querySelector("input").value.trim();
-  if(!link) return alert("Paste document link");
+  const row = btn.closest(".appendix");
+  const appendix = row.querySelector("b").innerText.trim();
+  const link = row.querySelector("input").value.trim();
 
-  btn.innerText="Saving…"; btn.disabled=true;
-  fetch(`${APPENDIX_API}?action=save&appendix=${encodeURIComponent(appendix)}&doc_link=${encodeURIComponent(link)}`)
-    .then(r=>r.json())
-    .then(()=>{btn.innerText="Saved";btn.style.background="#16a34a";loadDashboard();})
-    .catch(()=>{btn.innerText="Save";btn.disabled=false;alert("Save failed");});
+  if(!link){
+    alert("Paste document link");
+    return;
+  }
+
+  btn.innerText = "Saving...";
+  btn.disabled = true;
+
+  fetch("/api/save-appendix", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      appendix: appendix,
+      doc_link: link
+    })
+  })
+  .then(r => r.json())
+  .then(() => {
+    btn.innerText = "Saved";
+    btn.style.background = "#16a34a";
+    loadDashboard(); // refresh progress
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Save failed");
+    btn.innerText = "Save";
+    btn.disabled = false;
+  });
 }
+</script>
+
 
 loadDashboard();
 </script>
