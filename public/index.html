@@ -54,12 +54,12 @@ const STUDENT_API =
 "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
 
 const APPENDIX_API =
-"https://script.google.com/macros/s/AKfycbynCdZl91FZjGr3bf6sofrSNlnrotZnxI87SRHE3jl6ngLCABgT_PW2No5UkVtwahwS7g/exec";
+"https://script.google.com/macros/s/AKfycbyvmcbCmkktJjovaf4sKiF_cuYFEY5oMJwSbBq5Xa3c2Z7vGTb0TetxuECzZ3c6LYBntg/exec";
 
 /* ================= LOAD ================= */
 async function loadDashboard(){
   const students = await fetch(STUDENT_API).then(r=>r.json());
-  const appendix = await fetch(APPENDIX_API).then(r=>r.json());
+  const appendixAll = await fetch(APPENDIX_API).then(r=>r.json());
 
   const programmes = {};
 
@@ -68,27 +68,35 @@ async function loadDashboard(){
     if(!p) return;
 
     if(!programmes[p]){
-      programmes[p]={
-        academic:p,
-        bm:r["PROGRAM AKADEMIK"],
-        mqr:r["NO MQR"],
-        centre:r["PEMILIK PROGRAM"],
-        nec:r["NEC"],
-        ketua:r["KETUA PROGRAM"],
-        team:new Set(),
-        students:[],
-        aktif:0,
-        graduan:0,
-        appendix
+
+      // ✅ FILTER APPENDIX PER PROGRAM
+      const appendixByProgram = appendixAll.filter(
+        a => a.PROGRAM === p
+      );
+
+      programmes[p] = {
+        academic: p,
+        bm: r["PROGRAM AKADEMIK"],
+        mqr: r["NO MQR"],
+        centre: r["PEMILIK PROGRAM"],
+        nec: r["NEC"],
+        ketua: r["KETUA PROGRAM"],
+        team: new Set(),
+        students: [],
+        aktif: 0,
+        graduan: 0,
+        appendix: appendixByProgram
       };
     }
 
     programmes[p].students.push(r);
-    if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[p].aktif++;
-    if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[p].graduan++;
 
-    if(r["PENYELIA UTAMA"] && r["PENYELIA UTAMA"]!==r["KETUA PROGRAM"])
+    if(r["STATUS PENGAJIAN"] === "AKTIF") programmes[p].aktif++;
+    if(r["STATUS PENGAJIAN"] === "BERIJAZAH") programmes[p].graduan++;
+
+    if(r["PENYELIA UTAMA"] && r["PENYELIA UTAMA"] !== r["KETUA PROGRAM"]){
       programmes[p].team.add(r["PENYELIA UTAMA"]);
+    }
   });
 
   render(programmes);
@@ -197,6 +205,7 @@ function saveLink(btn){
   const row = btn.closest(".appendix");
   const appendix = row.querySelector("b").innerText.trim();
   const link = row.querySelector("input").value.trim();
+  const program = btn.closest(".card").querySelector("h3").innerText;
 
   if(!link) return alert("Paste document link");
 
@@ -205,28 +214,23 @@ function saveLink(btn){
 
   fetch(APPENDIX_API,{
     method:"POST",
-    body:new URLSearchParams({
-      appendix: appendix,
-      doc_link: link
-    })
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ appendix, program, doc_link: link })
   })
   .then(r=>r.json())
   .then(res=>{
-    if(res.success){
-      btn.innerText="Saved";
-      btn.style.background="#16a34a";
-      loadDashboard();
-    } else {
-      throw res;
-    }
+    if(!res.success) throw res;
+    btn.innerText="Saved";
+    btn.style.background="#16a34a";
+    loadDashboard();
   })
-  .catch(err=>{
-    console.error(err);
-    alert("Save failed");
+  .catch(()=>{
     btn.innerText="Save";
     btn.disabled=false;
+    alert("Save failed");
   });
 }
+
 
 /* ================= INIT ================= */
 loadDashboard();
