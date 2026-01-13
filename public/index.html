@@ -3,179 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <title>PPKPK – Programme Accreditation Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{
-  font-family: Inter, Arial, sans-serif;
-  background:#f6f8fb;
-  margin:0;
-  padding:24px;
+:root{
+  --primary:#7c3aed;
+  --primary-dark:#5b21b6;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --muted:#64748b;
+  --bg:#fafafa;
 }
-h1{margin-bottom:20px}
 
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:linear-gradient(180deg,#faf7ff 0%,#f8fafc 60%);
+  color:#0f172a;
+}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 28px;
+}
+.brand{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.logo{
+  width:42px;height:42px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#7c3aed,#9333ea);
+  color:white;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.brand-title{
+  font-weight:700;
+}
+.brand-sub{
+  font-size:13px;
+  color:var(--muted);
+}
+.login{
+  background:var(--primary);
+  color:white;
+  padding:10px 18px;
+  border-radius:999px;
+  font-weight:600;
+  text-decoration:none;
+}
+
+/* ===== HERO ===== */
+.hero{
+  text-align:center;
+  padding:80px 20px 60px;
+}
+.hero h1{
+  font-size:44px;
+  margin:0 0 16px;
+}
+.hero h1 span{color:var(--primary)}
+.hero p{
+  font-size:17px;
+  color:var(--muted);
+  max-width:720px;
+  margin:auto;
+}
+
+/* ===== GRID ===== */
+.container{
+  max-width:1300px;
+  margin:auto;
+  padding:20px 24px 80px;
+}
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
-  gap:20px;
+  gap:28px;
 }
 
+/* ===== CARD ===== */
 .card{
-  background:#fff;
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 10px 24px rgba(0,0,0,.08);
+  background:white;
+  border-radius:22px;
+  padding:24px;
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.06),
+    0 20px 45px rgba(0,0,0,.04);
+  transition:.25s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
 }
 
-.badge{
-  display:inline-block;
-  padding:4px 12px;
-  border-radius:999px;
-  font-size:12px;
-  margin:6px 0;
-}
-.ready{background:#e6fff0;color:#047857}
-.notready{background:#ffecec;color:#b91c1c}
-
-.tabs{
+/* ===== HEADER ===== */
+.card-head{
   display:flex;
+  justify-content:space-between;
   gap:16px;
-  margin:12px 0;
 }
-.tab{
-  cursor:pointer;
+.card h3{margin:0}
+.sub{color:var(--muted);font-size:14px}
+
+/* ===== BADGE ===== */
+.badge{
+  font-size:12px;
+  padding:6px 12px;
+  border-radius:999px;
   font-weight:600;
-  color:#6b7280;
 }
-.tab.active{
-  color:#2563eb;
-  border-bottom:2px solid #2563eb;
-}
+.ready{background:#e6fff2;color:var(--success)}
+.notready{background:#fee2e2;color:var(--danger)}
 
-.section{display:none}
-.section.active{display:block}
-
-.progress-ring{
-  width:90px;height:90px;
+/* ===== PROGRESS ===== */
+.progress{
+  width:96px;height:96px;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
   font-weight:700;
-  margin:10px 0;
+  font-size:18px;
+  margin:18px 0;
+  position:relative;
   background:#e5e7eb;
 }
+.progress::after{
+  content:"Completion";
+  position:absolute;
+  bottom:-22px;
+  font-size:11px;
+  color:var(--muted);
+}
 
-/* COPPA */
-.area-box{
+/* ===== TABS ===== */
+.tabs{
+  display:flex;
+  gap:24px;
+  border-bottom:1px solid #e5e7eb;
+  margin:18px 0 14px;
+}
+.tab{
+  padding-bottom:8px;
+  font-weight:600;
+  cursor:pointer;
+  color:var(--muted);
+}
+.tab.active{
+  color:var(--primary);
+  border-bottom:3px solid var(--primary);
+}
+
+/* ===== SECTIONS ===== */
+.section{display:none}
+.section.active{display:block}
+
+/* ===== INFO ===== */
+.info{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px 20px;
+}
+.label{font-size:12px;color:var(--muted)}
+.value{font-weight:600}
+
+/* ===== COPPA ===== */
+.area{
   border:1px solid #e5e7eb;
-  border-radius:12px;
+  border-radius:14px;
   margin-bottom:12px;
   overflow:hidden;
 }
-.area-header{
-  background:#f1f5f9;
+.area-head{
   padding:12px 16px;
+  background:#f8fafc;
   font-weight:600;
-  cursor:pointer;
   display:flex;
   justify-content:space-between;
+  cursor:pointer;
 }
-.area-body{display:none;padding:12px}
-.area-box.open .area-body{display:block}
+.area-body{display:none;padding:14px}
+.area.open .area-body{display:block}
 
-.appendix{
+.row{
   display:grid;
-  grid-template-columns:70px 1fr 90px 1fr 70px;
+  grid-template-columns:70px 1fr 80px 1fr 70px;
   gap:8px;
-  align-items:center;
+  padding:8px 0;
+  border-bottom:1px dashed #e5e7eb;
   font-size:13px;
-  padding:6px 0;
-  border-bottom:1px dashed #eee;
 }
-.appendix:last-child{border-bottom:none}
-
-.appendix input{
-  padding:4px;
-  font-size:12px;
-}
+.row:last-child{border-bottom:none}
+.row input{padding:6px;font-size:12px}
 
 .save{
-  background:#2563eb;
+  background:var(--primary);
   color:white;
   border:none;
-  border-radius:6px;
-  font-size:12px;
+  border-radius:8px;
   cursor:pointer;
-  padding:4px 8px;
+  font-size:12px;
 }
+.save:disabled{background:#94a3b8}
 
+/* ===== TABLE ===== */
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:13px
+  font-size:13px;
 }
 th,td{
-  border:1px solid #ddd;
-  padding:6px
+  border:1px solid #e5e7eb;
+  padding:8px;
 }
-th{background:#f1f5f9}
+th{background:#f8fafc}
 </style>
 </head>
 
 <body>
 
-<h1>📘 PPKPK – Programme Accreditation Dashboard</h1>
-<div id="grid" class="grid"></div>
+<!-- TOP -->
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">P</div>
+    <div>
+      <div class="brand-title">PPKPK</div>
+      <div class="brand-sub">Programme Accreditation Monitoring</div>
+    </div>
+  </div>
+  <a class="login">Dashboard</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Monitor <span>programme accreditation</span> progress</h1>
+  <p>
+    Centralised dashboard for COPPA / SRR documentation, student status,
+    and programme readiness monitoring.
+  </p>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+  <div id="grid" class="grid"></div>
+</div>
 
 <script>
 /* ================= CONFIG ================= */
-const STUDENT_API =
-"https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
-
-const APPENDIX_API =
-"https://script.google.com/macros/s/AKfycbyvmcbCmkktJjovaf4sKiF_cuYFEY5oMJwSbBq5Xa3c2Z7vGTb0TetxuECzZ3c6LYBntg/exec";
+const STUDENT_API = "YOUR_STUDENT_API_URL";
+const APPENDIX_API = "YOUR_APPENDIX_API_URL";
 
 /* ================= LOAD ================= */
 async function loadDashboard(){
   const students = await fetch(STUDENT_API).then(r=>r.json());
   const appendixAll = await fetch(APPENDIX_API).then(r=>r.json());
-
   const programmes = {};
 
   students.forEach(r=>{
-    const program = r["ACADEMIC PROGRAM"];
-    if(!program) return;
+    const p=r["ACADEMIC PROGRAM"];
+    if(!p) return;
 
-    if(!programmes[program]){
-
-      /* 🔑 FILTER APPENDIX BY PROGRAM */
-      const appendixByProgram = appendixAll.filter(a =>
-        (a.PROGRAMS || "").trim().toLowerCase() ===
-        program.trim().toLowerCase()
-      );
-
-      programmes[program] = {
-        academic: program,
-        bm: r["PROGRAM AKADEMIK"],
-        mqr: r["NO MQR"],
-        centre: r["PEMILIK PROGRAM"],
-        nec: r["NEC"],
-        ketua: r["KETUA PROGRAM"],
-        team: new Set(),
-        students: [],
-        aktif: 0,
-        graduan: 0,
-        appendix: appendixByProgram
+    if(!programmes[p]){
+      programmes[p]={
+        academic:p,
+        bm:r["PROGRAM AKADEMIK"],
+        mqr:r["NO MQR"],
+        centre:r["PEMILIK PROGRAM"],
+        nec:r["NEC"],
+        ketua:r["KETUA PROGRAM"],
+        team:new Set(),
+        students:[],
+        aktif:0,
+        graduan:0,
+        appendix:appendixAll.filter(a=>(a.PROGRAMS||"")==p)
       };
     }
-
-    programmes[program].students.push(r);
-
-    if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[program].aktif++;
-    if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[program].graduan++;
-
+    programmes[p].students.push(r);
+    if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[p].aktif++;
+    if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[p].graduan++;
     if(r["PENYELIA UTAMA"] && r["PENYELIA UTAMA"]!==r["KETUA PROGRAM"])
-      programmes[program].team.add(r["PENYELIA UTAMA"]);
+      programmes[p].team.add(r["PENYELIA UTAMA"]);
   });
 
   render(programmes);
@@ -187,21 +305,24 @@ function render(programmes){
   grid.innerHTML="";
 
   Object.values(programmes).forEach(p=>{
-    const completed=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
-    const percent=Math.round((completed/p.appendix.length)*100)||0;
+    const done=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
+    const percent=Math.round(done/p.appendix.length*100)||0;
 
     const card=document.createElement("div");
     card.className="card";
-
     card.innerHTML=`
-      <h3>${p.academic}</h3>
-      <div>${p.bm}</div>
-      <span class="badge ${p.graduan>0?"ready":"notready"}">
-        ${p.graduan>0?"READY":"NOT READY"}
-      </span>
+      <div class="card-head">
+        <div>
+          <h3>${p.academic}</h3>
+          <div class="sub">${p.bm}</div>
+        </div>
+        <span class="badge ${p.graduan>0?"ready":"notready"}">
+          ${p.graduan>0?"READY":"NOT READY"}
+        </span>
+      </div>
 
-      <div class="progress-ring"
-        style="background:conic-gradient(#2563eb ${percent}%, #e5e7eb ${percent}%)">
+      <div class="progress"
+        style="background:conic-gradient(var(--primary) ${percent}%,#e5e7eb ${percent}%)">
         ${percent}%
       </div>
 
@@ -212,54 +333,48 @@ function render(programmes){
       </div>
 
       <div class="section active">
-        <p><b>MQR:</b> ${p.mqr}</p>
-        <p><b>Centre:</b> ${p.centre}</p>
-        <p><b>NEC:</b> ${p.nec}</p>
-        <p><b>Ketua:</b> ${p.ketua}</p>
-        <p><b>Team:</b> ${[...p.team].join(", ")||"-"}</p>
-        <p>Aktif: ${p.aktif} | Graduan: ${p.graduan}</p>
+        <div class="info">
+          <div><div class="label">MQR</div><div class="value">${p.mqr}</div></div>
+          <div><div class="label">Centre</div><div class="value">${p.centre}</div></div>
+          <div><div class="label">NEC</div><div class="value">${p.nec}</div></div>
+          <div><div class="label">Ketua</div><div class="value">${p.ketua}</div></div>
+          <div><div class="label">Aktif</div><div class="value">${p.aktif}</div></div>
+          <div><div class="label">Graduan</div><div class="value">${p.graduan}</div></div>
+        </div>
       </div>
 
       <div class="section">${renderCoppa(p.appendix)}</div>
       <div class="section">${renderStudents(p.students)}</div>
     `;
-
     grid.appendChild(card);
   });
 }
 
-/* ================= TABS ================= */
 function switchTab(el){
   const card=el.closest(".card");
   card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
   const idx=[...el.parentNode.children].indexOf(el);
-  card.querySelectorAll(".section").forEach((s,i)=>{
-    s.classList.toggle("active",i===idx);
-  });
+  card.querySelectorAll(".section").forEach((s,i)=>s.classList.toggle("active",i===idx));
 }
 
-/* ================= COPPA ================= */
 function renderCoppa(list){
-  if(!list.length) return "<p>No appendix for this programme</p>";
-
   const g={};
   list.forEach(a=>(g[a.APPENDIX]=g[a.APPENDIX]||[]).push(a));
-
   return Object.keys(g).map(area=>`
-    <div class="area-box">
-      <div class="area-header" onclick="this.parentNode.classList.toggle('open')">
+    <div class="area">
+      <div class="area-head" onclick="this.parentNode.classList.toggle('open')">
         ${area}
         <span>${g[area].filter(x=>x.STATUS==="COMPLETE").length}/${g[area].length}</span>
       </div>
       <div class="area-body">
         ${g[area].map(a=>`
-          <div class="appendix">
+          <div class="row">
             <b>${a["NO APPENDIX"]}</b>
             <span>${a.ITEM}</span>
             <span>${a.PIC_ROLE}</span>
-            <input value="${a.DOC_LINK||""}" placeholder="Paste link">
-            <button class="save" onclick="saveLink(this)">Save</button>
+            <input value="${a.DOC_LINK||""}">
+            <button class="save">Save</button>
           </div>
         `).join("")}
       </div>
@@ -267,9 +382,7 @@ function renderCoppa(list){
   `).join("");
 }
 
-/* ================= STUDENTS ================= */
 function renderStudents(list){
-  if(!list.length) return "<p>No student data</p>";
   return `
     <table>
       <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
@@ -283,38 +396,6 @@ function renderStudents(list){
     </table>`;
 }
 
-/* ================= SAVE ================= */
-function saveLink(btn){
-  const row = btn.closest(".appendix");
-  const appendix = row.querySelector("b").innerText.trim();
-  const link = row.querySelector("input").value.trim();
-  const program = btn.closest(".card").querySelector("h3").innerText.trim();
-
-  if(!link) return alert("Paste document link");
-
-  btn.innerText="Saving...";
-  btn.disabled=true;
-
-  fetch(APPENDIX_API,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ appendix, program, doc_link: link })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(!res.success) throw res;
-    btn.innerText="Saved";
-    btn.style.background="#16a34a";
-    loadDashboard();
-  })
-  .catch(()=>{
-    btn.innerText="Save";
-    btn.disabled=false;
-    alert("Save failed");
-  });
-}
-
-/* ================= INIT ================= */
 loadDashboard();
 </script>
 
