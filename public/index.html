@@ -6,9 +6,10 @@
 
 <style>
 body{font-family:Inter,Arial,sans-serif;background:#f6f8fb;margin:0;padding:24px}
+h1{margin-bottom:20px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:20px}
 .card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 10px 24px rgba(0,0,0,.08)}
-.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;margin:6px 0}
 .ready{background:#e6fff0;color:#047857}
 .notready{background:#ffecec;color:#b91c1c}
 .tabs{display:flex;gap:16px;margin:12px 0}
@@ -16,14 +17,26 @@ body{font-family:Inter,Arial,sans-serif;background:#f6f8fb;margin:0;padding:24px
 .tab.active{color:#2563eb;border-bottom:2px solid #2563eb}
 .section{display:none}
 .section.active{display:block}
-.progress-ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:#e5e7eb}
-.area-box{border:1px solid #e5e7eb;border-radius:12px;margin-bottom:12px}
+.progress-ring{
+  width:90px;height:90px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;background:#e5e7eb;margin:10px 0
+}
+.area-box{border:1px solid #e5e7eb;border-radius:12px;margin-bottom:12px;overflow:hidden}
 .area-header{background:#f1f5f9;padding:12px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between}
 .area-body{display:none;padding:12px}
 .area-box.open .area-body{display:block}
-.appendix{display:grid;grid-template-columns:70px 1fr 90px 1fr 70px;gap:8px;font-size:13px;padding:6px 0}
+.appendix{
+  display:grid;
+  grid-template-columns:70px 1fr 90px 1fr 70px;
+  gap:8px;font-size:13px;padding:6px 0;border-bottom:1px dashed #eee
+}
+.appendix:last-child{border-bottom:none}
 .appendix input{font-size:12px;padding:4px}
-.save{background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:12px;padding:4px 8px;cursor:pointer}
+.save{
+  background:#2563eb;color:#fff;border:none;border-radius:6px;
+  font-size:12px;padding:4px 8px;cursor:pointer
+}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{border:1px solid #ddd;padding:6px}
 th{background:#f1f5f9}
@@ -41,12 +54,12 @@ const STUDENT_API =
 "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
 
 const APPENDIX_API =
-"https://script.google.com/macros/s/AKfycbxsHyDtfOtnqGxYiWkRPekxqZPvdZBDI2JrnZsW6KknRNwFz-Gj7pSIrl6tti832ioBTw/exec";
+"https://script.google.com/macros/s/AKfycbynCdZl91FZjGr3bf6sofrSNlnrotZnxI87SRHE3jl6ngLCABgT_PW2No5UkVtwahwS7g/exec";
 
 /* ================= LOAD ================= */
 async function loadDashboard(){
-  const students = await fetch(STUDENT_API).then(r => r.json());
-  const appendix = await fetch(APPENDIX_API).then(r => r.json());
+  const students = await fetch(STUDENT_API).then(r=>r.json());
+  const appendix = await fetch(APPENDIX_API).then(r=>r.json());
 
   const programmes = {};
 
@@ -66,7 +79,7 @@ async function loadDashboard(){
         students:[],
         aktif:0,
         graduan:0,
-        appendix: appendix
+        appendix
       };
     }
 
@@ -126,18 +139,18 @@ function render(programmes){
   });
 }
 
-/* ================= UI ================= */
+/* ================= TABS ================= */
 function switchTab(el){
   const card=el.closest(".card");
   card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   el.classList.add("active");
-
   const idx=[...el.parentNode.children].indexOf(el);
   card.querySelectorAll(".section").forEach((s,i)=>{
     s.classList.toggle("active",i===idx);
   });
 }
 
+/* ================= COPPA ================= */
 function renderCoppa(list){
   const g={};
   list.forEach(a=>(g[a.APPENDIX]=g[a.APPENDIX]||[]).push(a));
@@ -163,18 +176,20 @@ function renderCoppa(list){
   `).join("");
 }
 
+/* ================= STUDENTS ================= */
 function renderStudents(list){
+  if(!list.length) return "<p>No student data</p>";
   return `
-  <table>
-    <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
-    ${list.map(s=>`
-      <tr>
-        <td>${s["NO MATRIK"]||"-"}</td>
-        <td>${s["NAMA PELAJAR"]||"-"}</td>
-        <td>${s["STATUS PENGAJIAN"]||"-"}</td>
-      </tr>
-    `).join("")}
-  </table>`;
+    <table>
+      <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
+      ${list.map(s=>`
+        <tr>
+          <td>${s["NO MATRIK"]||"-"}</td>
+          <td>${s["NAMA PELAJAR"]||"-"}</td>
+          <td>${s["STATUS PENGAJIAN"]||"-"}</td>
+        </tr>
+      `).join("")}
+    </table>`;
 }
 
 /* ================= SAVE ================= */
@@ -185,44 +200,31 @@ function saveLink(btn){
 
   if(!link) return alert("Paste document link");
 
-  btn.innerText="Saving…";
+  btn.innerText="Saving...";
   btn.disabled=true;
 
-  fetch(APPENDIX_API, {
-  method: "POST",
-  body: new URLSearchParams({
-    appendix: appendix,
-    doc_link: link
-  })
-})
-.then(r => r.json())
-.then(res => {
-  if(res.success){
-    btn.innerText = "Saved";
-    btn.style.background = "#16a34a";
-    loadDashboard();
-  } else {
-    throw res;
-  }
-})
-.catch(err=>{
-  console.error(err);
-  alert("Save failed");
-  btn.innerText="Save";
-  btn.disabled=false;
-});
-
+  fetch(APPENDIX_API,{
+    method:"POST",
+    body:new URLSearchParams({
+      appendix: appendix,
+      doc_link: link
+    })
   })
   .then(r=>r.json())
-  .then(()=>{
-    btn.innerText="Saved";
-    btn.style.background="#16a34a";
-    loadDashboard();
+  .then(res=>{
+    if(res.success){
+      btn.innerText="Saved";
+      btn.style.background="#16a34a";
+      loadDashboard();
+    } else {
+      throw res;
+    }
   })
-  .catch(()=>{
+  .catch(err=>{
+    console.error(err);
+    alert("Save failed");
     btn.innerText="Save";
     btn.disabled=false;
-    alert("Save failed");
   });
 }
 
