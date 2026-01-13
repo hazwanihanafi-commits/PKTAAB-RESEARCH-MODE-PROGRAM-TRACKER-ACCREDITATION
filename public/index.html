@@ -70,9 +70,9 @@ async function loadDashboard(){
     if(!programmes[p]){
 
       // ✅ FILTER APPENDIX PER PROGRAM
-      const appendixByProgram = appendixAll.filter(
-        a => a.PROGRAM === p
-      );
+      const appendixByProgram = appendixAll.filter(a =>
+  (a.PROGRAMS || "").trim().toLowerCase() === p.trim().toLowerCase()
+);
 
       programmes[p] = {
         academic: p,
