@@ -36,19 +36,17 @@ th{background:#f1f5f9}
 <div id="grid" class="grid"></div>
 
 <script>
+/* ================= CONFIG ================= */
 const STUDENT_API =
 "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
 
 const APPENDIX_API =
 "https://script.google.com/macros/s/AKfycbx_gqp21PMI5y444MfDAPjfc-j8b2Ic_fbn6pJh-N4nNll38-wqH0ZUePDwsPAVtfoM-g/exec";
 
-
+/* ================= LOAD ================= */
 async function loadDashboard(){
   const students = await fetch(STUDENT_API).then(r => r.json());
   const appendix = await fetch(APPENDIX_API).then(r => r.json());
-
-}
-
 
   const programmes = {};
 
@@ -68,7 +66,7 @@ async function loadDashboard(){
         students:[],
         aktif:0,
         graduan:0,
-        appendix
+        appendix: appendix
       };
     }
 
@@ -83,6 +81,7 @@ async function loadDashboard(){
   render(programmes);
 }
 
+/* ================= RENDER ================= */
 function render(programmes){
   const grid=document.getElementById("grid");
   grid.innerHTML="";
@@ -127,6 +126,7 @@ function render(programmes){
   });
 }
 
+/* ================= UI ================= */
 function switchTab(el){
   const card=el.closest(".card");
   card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -177,46 +177,40 @@ function renderStudents(list){
   </table>`;
 }
 
+/* ================= SAVE ================= */
 function saveLink(btn){
   const row = btn.closest(".appendix");
   const appendix = row.querySelector("b").innerText.trim();
   const link = row.querySelector("input").value.trim();
 
-  if(!link){
-    alert("Paste document link");
-    return;
-  }
+  if(!link) return alert("Paste document link");
 
-  btn.innerText = "Saving…";
-  btn.disabled = true;
+  btn.innerText="Saving…";
+  btn.disabled=true;
 
   fetch(APPENDIX_API,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({
       appendix: appendix,
+      status: "COMPLETE",
       doc_link: link
     })
   })
-  .then(r => r.json())
-  .then(res => {
-    if(res.success){
-      btn.innerText = "Saved";
-      btn.style.background = "#16a34a";
-      loadDashboard(); // refresh
-    } else {
-      throw res;
-    }
+  .then(r=>r.json())
+  .then(()=>{
+    btn.innerText="Saved";
+    btn.style.background="#16a34a";
+    loadDashboard();
   })
-  .catch(err=>{
-    console.error(err);
+  .catch(()=>{
     btn.innerText="Save";
     btn.disabled=false;
     alert("Save failed");
   });
 }
 
-
+/* ================= INIT ================= */
 loadDashboard();
 </script>
 
