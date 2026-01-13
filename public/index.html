@@ -5,40 +5,119 @@
 <title>PPKPK – Programme Accreditation Dashboard</title>
 
 <style>
-body{font-family:Inter,Arial,sans-serif;background:#f6f8fb;margin:0;padding:24px}
+body{
+  font-family: Inter, Arial, sans-serif;
+  background:#f6f8fb;
+  margin:0;
+  padding:24px;
+}
 h1{margin-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:20px}
-.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 10px 24px rgba(0,0,0,.08)}
-.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;margin:6px 0}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 12px;
+  border-radius:999px;
+  font-size:12px;
+  margin:6px 0;
+}
 .ready{background:#e6fff0;color:#047857}
 .notready{background:#ffecec;color:#b91c1c}
-.tabs{display:flex;gap:16px;margin:12px 0}
-.tab{cursor:pointer;font-weight:600;color:#6b7280}
-.tab.active{color:#2563eb;border-bottom:2px solid #2563eb}
+
+.tabs{
+  display:flex;
+  gap:16px;
+  margin:12px 0;
+}
+.tab{
+  cursor:pointer;
+  font-weight:600;
+  color:#6b7280;
+}
+.tab.active{
+  color:#2563eb;
+  border-bottom:2px solid #2563eb;
+}
+
 .section{display:none}
 .section.active{display:block}
+
 .progress-ring{
-  width:90px;height:90px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:700;background:#e5e7eb;margin:10px 0
+  width:90px;height:90px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  margin:10px 0;
+  background:#e5e7eb;
 }
-.area-box{border:1px solid #e5e7eb;border-radius:12px;margin-bottom:12px;overflow:hidden}
-.area-header{background:#f1f5f9;padding:12px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between}
+
+/* COPPA */
+.area-box{
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  margin-bottom:12px;
+  overflow:hidden;
+}
+.area-header{
+  background:#f1f5f9;
+  padding:12px 16px;
+  font-weight:600;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+}
 .area-body{display:none;padding:12px}
 .area-box.open .area-body{display:block}
+
 .appendix{
   display:grid;
   grid-template-columns:70px 1fr 90px 1fr 70px;
-  gap:8px;font-size:13px;padding:6px 0;border-bottom:1px dashed #eee
+  gap:8px;
+  align-items:center;
+  font-size:13px;
+  padding:6px 0;
+  border-bottom:1px dashed #eee;
 }
 .appendix:last-child{border-bottom:none}
-.appendix input{font-size:12px;padding:4px}
-.save{
-  background:#2563eb;color:#fff;border:none;border-radius:6px;
-  font-size:12px;padding:4px 8px;cursor:pointer
+
+.appendix input{
+  padding:4px;
+  font-size:12px;
 }
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{border:1px solid #ddd;padding:6px}
+
+.save{
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:6px;
+  font-size:12px;
+  cursor:pointer;
+  padding:4px 8px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px
+}
+th,td{
+  border:1px solid #ddd;
+  padding:6px
+}
 th{background:#f1f5f9}
 </style>
 </head>
@@ -64,18 +143,19 @@ async function loadDashboard(){
   const programmes = {};
 
   students.forEach(r=>{
-    const p = r["ACADEMIC PROGRAM"];
-    if(!p) return;
+    const program = r["ACADEMIC PROGRAM"];
+    if(!program) return;
 
-    if(!programmes[p]){
+    if(!programmes[program]){
 
-      // ✅ FILTER APPENDIX PER PROGRAM
+      /* 🔑 FILTER APPENDIX BY PROGRAM */
       const appendixByProgram = appendixAll.filter(a =>
-  (a.PROGRAMS || "").trim().toLowerCase() === p.trim().toLowerCase()
-);
+        (a.PROGRAMS || "").trim().toLowerCase() ===
+        program.trim().toLowerCase()
+      );
 
-      programmes[p] = {
-        academic: p,
+      programmes[program] = {
+        academic: program,
         bm: r["PROGRAM AKADEMIK"],
         mqr: r["NO MQR"],
         centre: r["PEMILIK PROGRAM"],
@@ -89,14 +169,13 @@ async function loadDashboard(){
       };
     }
 
-    programmes[p].students.push(r);
+    programmes[program].students.push(r);
 
-    if(r["STATUS PENGAJIAN"] === "AKTIF") programmes[p].aktif++;
-    if(r["STATUS PENGAJIAN"] === "BERIJAZAH") programmes[p].graduan++;
+    if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[program].aktif++;
+    if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[program].graduan++;
 
-    if(r["PENYELIA UTAMA"] && r["PENYELIA UTAMA"] !== r["KETUA PROGRAM"]){
-      programmes[p].team.add(r["PENYELIA UTAMA"]);
-    }
+    if(r["PENYELIA UTAMA"] && r["PENYELIA UTAMA"]!==r["KETUA PROGRAM"])
+      programmes[program].team.add(r["PENYELIA UTAMA"]);
   });
 
   render(programmes);
@@ -108,11 +187,12 @@ function render(programmes){
   grid.innerHTML="";
 
   Object.values(programmes).forEach(p=>{
-    const done=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
-    const percent=Math.round(done/p.appendix.length*100)||0;
+    const completed=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
+    const percent=Math.round((completed/p.appendix.length)*100)||0;
 
     const card=document.createElement("div");
     card.className="card";
+
     card.innerHTML=`
       <h3>${p.academic}</h3>
       <div>${p.bm}</div>
@@ -121,7 +201,7 @@ function render(programmes){
       </span>
 
       <div class="progress-ring"
-        style="background:conic-gradient(#2563eb ${percent}%,#e5e7eb ${percent}%)">
+        style="background:conic-gradient(#2563eb ${percent}%, #e5e7eb ${percent}%)">
         ${percent}%
       </div>
 
@@ -143,6 +223,7 @@ function render(programmes){
       <div class="section">${renderCoppa(p.appendix)}</div>
       <div class="section">${renderStudents(p.students)}</div>
     `;
+
     grid.appendChild(card);
   });
 }
@@ -160,6 +241,8 @@ function switchTab(el){
 
 /* ================= COPPA ================= */
 function renderCoppa(list){
+  if(!list.length) return "<p>No appendix for this programme</p>";
+
   const g={};
   list.forEach(a=>(g[a.APPENDIX]=g[a.APPENDIX]||[]).push(a));
 
@@ -205,7 +288,7 @@ function saveLink(btn){
   const row = btn.closest(".appendix");
   const appendix = row.querySelector("b").innerText.trim();
   const link = row.querySelector("input").value.trim();
-  const program = btn.closest(".card").querySelector("h3").innerText;
+  const program = btn.closest(".card").querySelector("h3").innerText.trim();
 
   if(!link) return alert("Paste document link");
 
@@ -230,7 +313,6 @@ function saveLink(btn){
     alert("Save failed");
   });
 }
-
 
 /* ================= INIT ================= */
 loadDashboard();
