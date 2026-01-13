@@ -41,7 +41,7 @@ const STUDENT_API =
 "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
 
 const APPENDIX_API =
-"https://script.google.com/macros/s/AKfycbynCdZl91FZjGr3bf6sofrSNlnrotZnxI87SRHE3jl6ngLCABgT_PW2No5UkVtwahwS7g/exec";
+"https://script.google.com/macros/s/AKfycbxsHyDtfOtnqGxYiWkRPekxqZPvdZBDI2JrnZsW6KknRNwFz-Gj7pSIrl6tti832ioBTw/exec";
 
 /* ================= LOAD ================= */
 async function loadDashboard(){
@@ -188,14 +188,30 @@ function saveLink(btn){
   btn.innerText="Saving…";
   btn.disabled=true;
 
-  fetch(APPENDIX_API,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      appendix: appendix,
-      status: "COMPLETE",
-      doc_link: link
-    })
+  fetch(APPENDIX_API, {
+  method: "POST",
+  body: new URLSearchParams({
+    appendix: appendix,
+    doc_link: link
+  })
+})
+.then(r => r.json())
+.then(res => {
+  if(res.success){
+    btn.innerText = "Saved";
+    btn.style.background = "#16a34a";
+    loadDashboard();
+  } else {
+    throw res;
+  }
+})
+.catch(err=>{
+  console.error(err);
+  alert("Save failed");
+  btn.innerText="Save";
+  btn.disabled=false;
+});
+
   })
   .then(r=>r.json())
   .then(()=>{
