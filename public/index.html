@@ -215,15 +215,13 @@ const STUDENT_API =
 const APPENDIX_API =
 "https://script.google.com/macros/s/AKfycbyvmcbCmkktJjovaf4sKiF_cuYFEY5oMJwSbBq5Xa3c2Z7vGTb0TetxuECzZ3c6LYBntg/exec";
 
-const norm = s => (s||"").toLowerCase().trim();
-
+const norm = s => (s||"").toLowerCase().replace(/\s+/g," ").trim();
 
 /* ================= COPPA ================= */
 function renderCoppa(list){
   if(!list.length){
     return `<p class="label">No COPPA items.</p>`;
   }
-
   const g = {};
   list.forEach(a => (g[a.APPENDIX] = g[a.APPENDIX] || []).push(a));
 
@@ -253,14 +251,9 @@ function renderStudents(list){
   if(!list.length){
     return `<p class="label">No student records.</p>`;
   }
-
   return `
     <table>
-      <tr>
-        <th>No Matrik</th>
-        <th>Nama Pelajar</th>
-        <th>Status</th>
-      </tr>
+      <tr><th>No Matrik</th><th>Nama Pelajar</th><th>Status</th></tr>
       ${list.map(s=>`
         <tr>
           <td>${s["NO MATRIK"]||"-"}</td>
@@ -363,13 +356,11 @@ async function loadDashboard(){
     if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[p].graduan++;
   });
 
-  renderDean(programmes);
   renderProgrammes(programmes);
 }
 
 loadDashboard();
 </script>
-
 
 </body>
 </html>
