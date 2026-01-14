@@ -13,10 +13,10 @@
   --success:#16a34a;
   --danger:#dc2626;
   --muted:#64748b;
-  --bg:#faf7ff;
 }
 
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Inter,Arial,sans-serif;
@@ -24,7 +24,7 @@ body{
   color:#0f172a;
 }
 
-/* ===== TOP ===== */
+/* ===== TOP BAR ===== */
 .topbar{
   display:flex;
   justify-content:space-between;
@@ -36,27 +36,26 @@ body{
   width:42px;height:42px;
   border-radius:12px;
   background:linear-gradient(135deg,#7c3aed,#9333ea);
-  color:white;font-weight:700;
+  color:#fff;font-weight:700;
   display:flex;align-items:center;justify-content:center;
 }
 .brand-sub{font-size:13px;color:var(--muted)}
 .btn{
   background:var(--primary);
-  color:white;
+  color:#fff;
   padding:10px 18px;
   border-radius:999px;
   font-weight:600;
-  text-decoration:none;
 }
 
 /* ===== HERO ===== */
 .hero{
   text-align:center;
-  padding:72px 20px 48px;
+  padding:64px 20px 40px;
 }
 .hero h1{
-  font-size:42px;
-  margin:0 0 16px;
+  font-size:40px;
+  margin:0 0 12px;
 }
 .hero span{color:var(--primary)}
 .hero p{
@@ -65,8 +64,42 @@ body{
   margin:auto;
 }
 
+/* ===== CONTAINER ===== */
+.container{
+  max-width:1300px;
+  margin:auto;
+  padding:20px 20px 80px;
+}
+
+/* ===== DEAN SUMMARY ===== */
+.dean-card{
+  background:linear-gradient(135deg,#ede9fe,#faf5ff);
+  border-radius:22px;
+  padding:26px;
+  margin-bottom:36px;
+  box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+.dean-title{
+  font-weight:700;
+  font-size:18px;
+  margin-bottom:16px;
+}
+.dean-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;
+}
+.dean-box{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+}
+.dean-label{font-size:12px;color:var(--muted)}
+.dean-value{font-size:22px;font-weight:700;margin-top:6px}
+.good{color:var(--success)}
+.bad{color:var(--danger)}
+
 /* ===== GRID ===== */
-.container{max-width:1300px;margin:auto;padding:24px 20px 80px}
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
@@ -75,14 +108,13 @@ body{
 
 /* ===== CARD ===== */
 .card{
-  background:white;
+  background:#fff;
   border-radius:22px;
   padding:24px;
   box-shadow:0 10px 25px rgba(0,0,0,.06);
 }
 
-/* ===== HEADER ===== */
-.card-head{display:flex;justify-content:space-between;gap:16px}
+/* ===== BADGE ===== */
 .badge{
   font-size:12px;
   padding:6px 12px;
@@ -96,9 +128,11 @@ body{
 .progress{
   width:90px;height:90px;
   border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-weight:700;
-  margin:16px 0;
+  margin:14px 0;
   background:#e5e7eb;
 }
 
@@ -132,84 +166,44 @@ body{
 .label{font-size:12px;color:var(--muted)}
 .value{font-weight:600}
 
-/* ===== COPPA ===== */
-.area{
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  margin-bottom:12px;
-  overflow:hidden;
-}
-.area-head{
-  padding:12px 16px;
-  background:#f8fafc;
-  font-weight:600;
-  display:flex;
-  justify-content:space-between;
-  cursor:pointer;
-}
-.area-body{display:none;padding:14px}
-.area.open .area-body{display:block}
-
-.row{
-  display:grid;
-  grid-template-columns:70px 1fr 80px 1fr 70px;
-  gap:8px;
-  padding:8px 0;
-  border-bottom:1px dashed #e5e7eb;
-  font-size:13px;
-}
-.row:last-child{border-bottom:none}
-.row input{padding:6px;font-size:12px}
-
-.save{
-  background:var(--primary);
-  color:white;
-  border:none;
-  border-radius:8px;
-  font-size:12px;
-  cursor:pointer;
-}
-
-/* ===== TABLE ===== */
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{border:1px solid #e5e7eb;padding:8px}
-th{background:#f8fafc}
-
 /* ===== MOBILE ===== */
 @media(max-width:768px){
   .hero h1{font-size:30px}
   .grid{grid-template-columns:1fr}
   .info{grid-template-columns:1fr}
-  .row{grid-template-columns:60px 1fr}
-  .row span:nth-child(3),
-  .row input,
-  .row button{grid-column:1/-1}
 }
 </style>
 </head>
 
 <body>
 
-<!-- TOP -->
+<!-- TOP BAR -->
 <div class="topbar">
   <div class="brand">
     <div class="logo">P</div>
     <div>
-      <div><b>PPKPK</b></div>
+      <b>PPKPK</b>
       <div class="brand-sub">Programme Accreditation Monitoring</div>
     </div>
   </div>
-  <a class="btn">Dashboard</a>
+  <div class="btn">Dashboard</div>
 </div>
 
 <!-- HERO -->
 <div class="hero">
   <h1>Monitor <span>programme accreditation</span> progress</h1>
-  <p>Centralised dashboard for COPPA / SRR documentation, student status and programme readiness.</p>
+  <p>
+    Centralised dashboard for COPPA / SRR documentation,
+    student status and programme readiness monitoring.
+  </p>
 </div>
 
-<!-- CONTENT -->
 <div class="container">
+
+  <!-- DEAN SUMMARY -->
+  <div id="dean-summary" class="dean-card"></div>
+
+  <!-- PROGRAMMES -->
   <div id="grid" class="grid"></div>
 </div>
 
@@ -221,10 +215,7 @@ const STUDENT_API =
 const APPENDIX_API =
 "https://script.google.com/macros/s/AKfycbyvmcbCmkktJjovaf4sKiF_cuYFEY5oMJwSbBq5Xa3c2Z7vGTb0TetxuECzZ3c6LYBntg/exec";
 
-/* ===== NORMALISE ===== */
-function norm(s){
-  return (s||"").toLowerCase().replace(/\s+/g," ").trim();
-}
+const norm = s => (s||"").toLowerCase().trim();
 
 /* ================= LOAD ================= */
 async function loadDashboard(){
@@ -234,7 +225,7 @@ async function loadDashboard(){
   const programmes = {};
 
   students.forEach(r=>{
-    const p=r["ACADEMIC PROGRAM"];
+    const p = r["ACADEMIC PROGRAM"];
     if(!p) return;
 
     if(!programmes[p]){
@@ -245,26 +236,49 @@ async function loadDashboard(){
         centre:r["PEMILIK PROGRAM"],
         nec:r["NEC"],
         ketua:r["KETUA PROGRAM"],
-        team:new Set(),
         students:[],
         aktif:0,
         graduan:0,
-        appendix:appendixAll.filter(a=>norm(a.PROGRAMS)===norm(p))
+        appendix: appendixAll.filter(a=>norm(a.PROGRAMS)===norm(p))
       };
     }
 
     programmes[p].students.push(r);
     if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[p].aktif++;
     if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[p].graduan++;
-    if(r["PENYELIA UTAMA"] && r["PENYELIA UTAMA"]!==r["KETUA PROGRAM"])
-      programmes[p].team.add(r["PENYELIA UTAMA"]);
   });
 
-  render(programmes);
+  renderDean(programmes);
+  renderProgrammes(programmes);
 }
 
-/* ================= RENDER ================= */
-function render(programmes){
+/* ===== DEAN SUMMARY ===== */
+function renderDean(programmes){
+  const list = Object.values(programmes);
+  let totalAppendix=0, complete=0, aktif=0, graduan=0;
+
+  list.forEach(p=>{
+    aktif+=p.aktif;
+    graduan+=p.graduan;
+    totalAppendix+=p.appendix.length;
+    complete+=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
+  });
+
+  const percent = totalAppendix?Math.round(complete/totalAppendix*100):0;
+
+  document.getElementById("dean-summary").innerHTML=`
+    <div class="dean-title">🎓 Dean Overview</div>
+    <div class="dean-grid">
+      <div class="dean-box"><div class="dean-label">Programmes</div><div class="dean-value">${list.length}</div></div>
+      <div class="dean-box"><div class="dean-label">Overall Completion</div><div class="dean-value">${percent}%</div></div>
+      <div class="dean-box"><div class="dean-label">COPPA Items</div><div class="dean-value">${complete}/${totalAppendix}</div></div>
+      <div class="dean-box"><div class="dean-label">Students</div><div class="dean-value">${aktif} Aktif<br>${graduan} Graduan</div></div>
+    </div>
+  `;
+}
+
+/* ===== PROGRAM CARDS ===== */
+function renderProgrammes(programmes){
   const grid=document.getElementById("grid");
   grid.innerHTML="";
 
@@ -275,95 +289,24 @@ function render(programmes){
     const card=document.createElement("div");
     card.className="card";
     card.innerHTML=`
-      <div class="card-head">
-        <div>
-          <h3>${p.academic}</h3>
-          <div class="label">${p.bm}</div>
-        </div>
-        <span class="badge ${p.graduan>0?"ready":"notready"}">
-          ${p.graduan>0?"READY":"NOT READY"}
-        </span>
-      </div>
+      <h3>${p.academic}</h3>
+      <div class="label">${p.bm}</div>
+      <span class="badge ${p.graduan>0?"ready":"notready"}">${p.graduan>0?"READY":"NOT READY"}</span>
 
       <div class="progress"
         style="background:conic-gradient(var(--primary) ${percent}%,#e5e7eb ${percent}%)">
         ${percent}%
       </div>
 
-      <div class="tabs">
-        <div class="tab active" onclick="switchTab(this)">Overview</div>
-        <div class="tab" onclick="switchTab(this)">COPPA / SRR</div>
-        <div class="tab" onclick="switchTab(this)">Students</div>
+      <div class="info">
+        <div><div class="label">MQR</div><div class="value">${p.mqr}</div></div>
+        <div><div class="label">Centre</div><div class="value">${p.centre}</div></div>
+        <div><div class="label">NEC</div><div class="value">${p.nec}</div></div>
+        <div><div class="label">Ketua</div><div class="value">${p.ketua}</div></div>
       </div>
-
-      <div class="section active">
-        <div class="info">
-          <div><div class="label">MQR</div><div class="value">${p.mqr}</div></div>
-          <div><div class="label">Centre</div><div class="value">${p.centre}</div></div>
-          <div><div class="label">NEC</div><div class="value">${p.nec}</div></div>
-          <div><div class="label">Ketua</div><div class="value">${p.ketua}</div></div>
-          <div><div class="label">Aktif</div><div class="value">${p.aktif}</div></div>
-          <div><div class="label">Graduan</div><div class="value">${p.graduan}</div></div>
-        </div>
-      </div>
-
-      <div class="section">${renderCoppa(p.appendix)}</div>
-      <div class="section">${renderStudents(p.students)}</div>
     `;
     grid.appendChild(card);
   });
-}
-
-/* ================= TABS ================= */
-function switchTab(el){
-  const card=el.closest(".card");
-  card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  el.classList.add("active");
-  const idx=[...el.parentNode.children].indexOf(el);
-  card.querySelectorAll(".section").forEach((s,i)=>s.classList.toggle("active",i===idx));
-}
-
-/* ================= COPPA ================= */
-function renderCoppa(list){
-  if(!list.length){
-    return `<p class="label">No COPPA items for this programme.</p>`;
-  }
-  const g={};
-  list.forEach(a=>(g[a.APPENDIX]=g[a.APPENDIX]||[]).push(a));
-  return Object.keys(g).map(area=>`
-    <div class="area">
-      <div class="area-head" onclick="this.parentNode.classList.toggle('open')">
-        ${area}
-        <span>${g[area].filter(x=>x.STATUS==="COMPLETE").length}/${g[area].length}</span>
-      </div>
-      <div class="area-body">
-        ${g[area].map(a=>`
-          <div class="row">
-            <b>${a["NO APPENDIX"]}</b>
-            <span>${a.ITEM}</span>
-            <span>${a.PIC_ROLE}</span>
-            <input value="${a.DOC_LINK||""}">
-            <button class="save">Save</button>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `).join("");
-}
-
-/* ================= STUDENTS ================= */
-function renderStudents(list){
-  return `
-    <table>
-      <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
-      ${list.map(s=>`
-        <tr>
-          <td>${s["NO MATRIK"]||"-"}</td>
-          <td>${s["NAMA PELAJAR"]||"-"}</td>
-          <td>${s["STATUS PENGAJIAN"]||"-"}</td>
-        </tr>
-      `).join("")}
-    </table>`;
 }
 
 loadDashboard();
