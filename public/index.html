@@ -14,6 +14,7 @@
   --danger:#dc2626;
   --muted:#64748b;
   --border:#e5e7eb;
+  --bg:#faf7ff;
 }
 
 *{box-sizing:border-box}
@@ -232,7 +233,6 @@ th{background:#f8fafc}
 
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
   <div class="brand">
     <div class="logo">P</div>
@@ -244,18 +244,13 @@ th{background:#f8fafc}
   <div class="btn">Dashboard</div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
   <h1>Monitor <span>programme accreditation</span> progress</h1>
   <p>Centralised dashboard for COPPA / SRR documentation, student status and programme readiness.</p>
 </div>
 
 <div class="container">
-
-  <!-- DEAN SUMMARY -->
   <div id="dean-summary" class="dean-card"></div>
-
-  <!-- PROGRAMMES -->
   <div id="grid" class="grid"></div>
 </div>
 
@@ -277,7 +272,7 @@ async function loadDashboard(){
   const programmes = {};
 
   students.forEach(r=>{
-    const p = r["ACADEMIC PROGRAM"];
+    const p=r["ACADEMIC PROGRAM"];
     if(!p) return;
 
     if(!programmes[p]){
@@ -306,8 +301,8 @@ async function loadDashboard(){
 
 /* ===== DEAN SUMMARY ===== */
 function renderDean(programmes){
-  const list = Object.values(programmes);
-  let total=0, done=0, aktif=0, graduan=0;
+  const list=Object.values(programmes);
+  let total=0,done=0,aktif=0,graduan=0;
 
   list.forEach(p=>{
     total+=p.appendix.length;
@@ -316,7 +311,7 @@ function renderDean(programmes){
     graduan+=p.graduan;
   });
 
-  const percent = total?Math.round(done/total*100):0;
+  const percent=total?Math.round(done/total*100):0;
 
   document.getElementById("dean-summary").innerHTML=`
     <div class="dean-title">🎓 Dean Overview</div>
@@ -325,8 +320,7 @@ function renderDean(programmes){
       <div class="dean-box"><div class="dean-label">Overall Completion</div><div class="dean-value">${percent}%</div></div>
       <div class="dean-box"><div class="dean-label">COPPA Items</div><div class="dean-value">${done}/${total}</div></div>
       <div class="dean-box"><div class="dean-label">Students</div><div class="dean-value">${aktif} Aktif<br>${graduan} Graduan</div></div>
-    </div>
-  `;
+    </div>`;
 }
 
 /* ===== PROGRAM CARDS ===== */
@@ -370,7 +364,7 @@ function renderProgrammes(programmes){
         </div>
       </div>
 
-      <div class="section">${renderCoppa(p.appendix)}</div>
+      <div class="section">${renderCoppa(p.appendix,p.academic)}</div>
       <div class="section">${renderStudents(p.students)}</div>
     `;
     grid.appendChild(card);
@@ -378,7 +372,7 @@ function renderProgrammes(programmes){
 }
 
 /* ===== COPPA ===== */
-function renderCoppa(list){
+function renderCoppa(list,program){
   if(!list.length) return `<p class="label">No COPPA items.</p>`;
 
   const g={};
@@ -396,12 +390,9 @@ function renderCoppa(list){
             <div class="coppa-code">${a["NO APPENDIX"]}</div>
             <div>${a.ITEM}</div>
             <div class="coppa-role">${a.PIC_ROLE}</div>
-            <input value="${a.DOC_LINK||""}" readonly>
-            ${
-              a.DOC_LINK
-              ? `<a class="save" href="${a.DOC_LINK}" target="_blank">Open</a>`
-              : `<span class="label">Pending</span>`
-            }
+            <input id="link-${program}-${a["NO APPENDIX"]}" value="${a.DOC_LINK||""}">
+            <button class="save"
+              onclick="saveLink('${a["NO APPENDIX"]}','${program}')">Save</button>
           </div>
         `).join("")}
       </div>
@@ -409,13 +400,31 @@ function renderCoppa(list){
   `).join("");
 }
 
+/* ===== SAVE ===== */
+function saveLink(appendix,program){
+  const input=document.getElementById(`link-${program}-${appendix}`);
+  const link=input.value.trim();
+  if(!link) return alert("Paste document link");
+
+  fetch(APPENDIX_API,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ appendix, program, doc_link: link })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(!res.success) throw res;
+    loadDashboard();
+  })
+  .catch(()=>alert("Save failed"));
+}
+
 /* ===== STUDENTS ===== */
 function renderStudents(list){
   if(!list.length) return `<p class="label">No students.</p>`;
-
   return `
     <table>
-      <tr><th>No Matrik</th><th>Nama</th><th>Status</th></tr>
+      <tr><th>No Matrik</th><th>Nama Pelajar</th><th>Status</th></tr>
       ${list.map(s=>`
         <tr>
           <td>${s["NO MATRIK"]||"-"}</td>
@@ -424,6 +433,14 @@ function renderStudents(list){
         </tr>
       `).join("")}
     </table>`;
+}
+
+function switchTab(el){
+  const card=el.closest(".card");
+  card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  const idx=[...el.parentNode.children].indexOf(el);
+  card.querySelectorAll(".section").forEach((s,i)=>s.classList.toggle("active",i===idx));
 }
 
 loadDashboard();
