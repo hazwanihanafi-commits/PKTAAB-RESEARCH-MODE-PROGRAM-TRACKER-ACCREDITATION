@@ -217,6 +217,126 @@ const APPENDIX_API =
 
 const norm = s => (s||"").toLowerCase().trim();
 
+<script>
+/* ================= CONFIG ================= */
+const STUDENT_API = "YOUR_STUDENT_API_URL";
+const APPENDIX_API = "YOUR_APPENDIX_API_URL";
+const norm = s => (s||"").toLowerCase().trim();
+
+/* ================= COPPA ================= */
+function renderCoppa(list){
+  if(!list.length){
+    return `<p class="label">No COPPA items.</p>`;
+  }
+
+  const g = {};
+  list.forEach(a => (g[a.APPENDIX] = g[a.APPENDIX] || []).push(a));
+
+  return Object.keys(g).map(area => `
+    <div class="area">
+      <div class="area-head" onclick="this.parentNode.classList.toggle('open')">
+        ${area}
+        <span>${g[area].filter(x=>x.STATUS==="COMPLETE").length}/${g[area].length}</span>
+      </div>
+      <div class="area-body">
+        ${g[area].map(a=>`
+          <div class="row">
+            <b>${a["NO APPENDIX"]}</b>
+            <span>${a.ITEM}</span>
+            <span>${a.PIC_ROLE}</span>
+            <input value="${a.DOC_LINK||""}" readonly>
+            <a class="save" href="${a.DOC_LINK||"#"}" target="_blank">Open</a>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ================= STUDENTS ================= */
+function renderStudents(list){
+  if(!list.length){
+    return `<p class="label">No student records.</p>`;
+  }
+
+  return `
+    <table>
+      <tr>
+        <th>No Matrik</th>
+        <th>Nama Pelajar</th>
+        <th>Status</th>
+      </tr>
+      ${list.map(s=>`
+        <tr>
+          <td>${s["NO MATRIK"]||"-"}</td>
+          <td>${s["NAMA PELAJAR"]||"-"}</td>
+          <td>${s["STATUS PENGAJIAN"]||"-"}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
+
+/* ================= TABS ================= */
+function switchTab(el){
+  const card = el.closest(".card");
+  card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+
+  const idx = [...el.parentNode.children].indexOf(el);
+  card.querySelectorAll(".section").forEach((s,i)=>{
+    s.classList.toggle("active", i === idx);
+  });
+}
+
+/* ================= PROGRAM CARDS ================= */
+function renderProgrammes(programmes){
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  Object.values(programmes).forEach(p=>{
+    const done = p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
+    const percent = Math.round(done / p.appendix.length * 100) || 0;
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <h3>${p.academic}</h3>
+      <div class="label">${p.bm}</div>
+
+      <span class="badge ${p.graduan>0?"ready":"notready"}">
+        ${p.graduan>0?"READY":"NOT READY"}
+      </span>
+
+      <div class="progress"
+        style="background:conic-gradient(var(--primary) ${percent}%,#e5e7eb ${percent}%)">
+        ${percent}%
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this)">Overview</div>
+        <div class="tab" onclick="switchTab(this)">COPPA / SRR</div>
+        <div class="tab" onclick="switchTab(this)">Students</div>
+      </div>
+
+      <div class="section active">
+        <div class="info">
+          <div><div class="label">MQR</div><div class="value">${p.mqr}</div></div>
+          <div><div class="label">Centre</div><div class="value">${p.centre}</div></div>
+          <div><div class="label">NEC</div><div class="value">${p.nec}</div></div>
+          <div><div class="label">Ketua</div><div class="value">${p.ketua}</div></div>
+          <div><div class="label">Aktif</div><div class="value">${p.aktif}</div></div>
+          <div><div class="label">Graduan</div><div class="value">${p.graduan}</div></div>
+        </div>
+      </div>
+
+      <div class="section">${renderCoppa(p.appendix)}</div>
+      <div class="section">${renderStudents(p.students)}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
 /* ================= LOAD ================= */
 async function loadDashboard(){
   const students = await fetch(STUDENT_API).then(r=>r.json());
@@ -229,7 +349,7 @@ async function loadDashboard(){
     if(!p) return;
 
     if(!programmes[p]){
-      programmes[p]={
+      programmes[p] = {
         academic:p,
         bm:r["PROGRAM AKADEMIK"],
         mqr:r["NO MQR"],
@@ -252,65 +372,9 @@ async function loadDashboard(){
   renderProgrammes(programmes);
 }
 
-/* ===== DEAN SUMMARY ===== */
-function renderDean(programmes){
-  const list = Object.values(programmes);
-  let totalAppendix=0, complete=0, aktif=0, graduan=0;
-
-  list.forEach(p=>{
-    aktif+=p.aktif;
-    graduan+=p.graduan;
-    totalAppendix+=p.appendix.length;
-    complete+=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
-  });
-
-  const percent = totalAppendix?Math.round(complete/totalAppendix*100):0;
-
-  document.getElementById("dean-summary").innerHTML=`
-    <div class="dean-title">🎓 Dean Overview</div>
-    <div class="dean-grid">
-      <div class="dean-box"><div class="dean-label">Programmes</div><div class="dean-value">${list.length}</div></div>
-      <div class="dean-box"><div class="dean-label">Overall Completion</div><div class="dean-value">${percent}%</div></div>
-      <div class="dean-box"><div class="dean-label">COPPA Items</div><div class="dean-value">${complete}/${totalAppendix}</div></div>
-      <div class="dean-box"><div class="dean-label">Students</div><div class="dean-value">${aktif} Aktif<br>${graduan} Graduan</div></div>
-    </div>
-  `;
-}
-
-/* ===== PROGRAM CARDS ===== */
-function renderProgrammes(programmes){
-  const grid=document.getElementById("grid");
-  grid.innerHTML="";
-
-  Object.values(programmes).forEach(p=>{
-    const done=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
-    const percent=Math.round(done/p.appendix.length*100)||0;
-
-    const card=document.createElement("div");
-    card.className="card";
-    card.innerHTML=`
-      <h3>${p.academic}</h3>
-      <div class="label">${p.bm}</div>
-      <span class="badge ${p.graduan>0?"ready":"notready"}">${p.graduan>0?"READY":"NOT READY"}</span>
-
-      <div class="progress"
-        style="background:conic-gradient(var(--primary) ${percent}%,#e5e7eb ${percent}%)">
-        ${percent}%
-      </div>
-
-      <div class="info">
-        <div><div class="label">MQR</div><div class="value">${p.mqr}</div></div>
-        <div><div class="label">Centre</div><div class="value">${p.centre}</div></div>
-        <div><div class="label">NEC</div><div class="value">${p.nec}</div></div>
-        <div><div class="label">Ketua</div><div class="value">${p.ketua}</div></div>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-}
-
 loadDashboard();
 </script>
+
 
 </body>
 </html>
