@@ -4,155 +4,506 @@
 <meta charset="UTF-8">
 <title>PKTAAB – Programme Accreditation Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-:root{--primary:#7c3aed;--success:#16a34a;--danger:#dc2626;--muted:#64748b;--border:#e5e7eb;}
+:root{
+  --primary:#7c3aed;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --muted:#64748b;
+  --border:#e5e7eb;
+  --bg:#faf7ff;
+}
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,Arial,sans-serif;background:#faf7ff;color:#0f172a}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 24px}
+
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:linear-gradient(180deg,#faf7ff 0%,#f8fafc 60%);
+  color:#0f172a;
+}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 24px;
+}
 .brand{display:flex;gap:12px;align-items:center}
-.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#9333ea);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
-.brand-sub{font-size:13px;color:#64748b}
-.btn{background:#7c3aed;color:#fff;padding:10px 18px;border-radius:999px;font-weight:600}
-.hero{text-align:center;padding:50px 20px}
-.container{max-width:1300px;margin:auto;padding:20px}
-.dean-card,.card{background:#fff;border-radius:22px;padding:24px;box-shadow:0 10px 25px rgba(0,0,0,.06)}
-.dean-card{margin-bottom:30px}
-.dean-grid,.info{display:grid;gap:15px}
-.dean-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
-.info{grid-template-columns:repeat(2,1fr)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:28px}
-.badge{font-size:12px;padding:6px 12px;border-radius:999px;font-weight:600}
-.ready{background:#e6fff2;color:#16a34a}.notready{background:#fee2e2;color:#dc2626}
-.progress{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;margin:14px 0}
-.tabs{display:flex;gap:20px;border-bottom:1px solid #e5e7eb;margin:16px 0}
-.tab{padding-bottom:8px;cursor:pointer}
-.tab.active{color:#7c3aed;border-bottom:3px solid #7c3aed}
-.section{display:none}.section.active{display:block}
-.area{border:1px solid #e5e7eb;border-radius:14px;margin-bottom:12px}
-.area-head{padding:14px 18px;background:#f8fafc;font-weight:700;display:flex;justify-content:space-between;cursor:pointer}
-.area-body{display:none}.area.open .area-body{display:block}
-.coppa-row{display:grid;grid-template-columns:80px 1fr 120px 120px;gap:10px;padding:10px 18px;border-top:1px dashed #e5e7eb}
-.coppa-role{font-size:12px;background:#f1f5f9;padding:4px 8px;border-radius:999px;text-align:center}
-.check-wrap{display:flex;align-items:center;gap:8px}
-.save{background:#7c3aed;color:white;padding:10px 12px;border-radius:8px;text-decoration:none}
-table{width:100%;border-collapse:collapse} th,td{border:1px solid #e5e7eb;padding:8px}
+.logo{
+  width:42px;height:42px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#7c3aed,#9333ea);
+  color:#fff;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.brand-sub{font-size:13px;color:var(--muted)}
+.btn{
+  background:var(--primary);
+  color:#fff;
+  padding:10px 18px;
+  border-radius:999px;
+  font-weight:600;
+}
+
+/* ===== HERO ===== */
+.hero{
+  text-align:center;
+  padding:64px 20px 40px;
+}
+.hero h1{
+  font-size:40px;
+  margin:0 0 12px;
+}
+.hero span{color:var(--primary)}
+.hero p{
+  color:var(--muted);
+  max-width:720px;
+  margin:auto;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+  max-width:1300px;
+  margin:auto;
+  padding:20px 20px 80px;
+}
+
+/* ===== DEAN SUMMARY ===== */
+.dean-card{
+  background:linear-gradient(135deg,#ede9fe,#faf5ff);
+  border-radius:22px;
+  padding:26px;
+  margin-bottom:36px;
+  box-shadow:0 15px 35px rgba(0,0,0,.08);
+}
+.dean-title{font-weight:700;font-size:18px;margin-bottom:16px}
+.dean-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;
+}
+.dean-box{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+}
+.dean-label{font-size:12px;color:var(--muted)}
+.dean-value{font-size:22px;font-weight:700;margin-top:6px}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(420px,1fr));
+  gap:28px;
+}
+
+/* ===== CARD ===== */
+.card{
+  background:#fff;
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
+
+/* ===== BADGE ===== */
+.badge{
+  font-size:12px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:600;
+}
+.ready{background:#e6fff2;color:var(--success)}
+.notready{background:#fee2e2;color:var(--danger)}
+
+/* ===== PROGRESS ===== */
+.progress{
+  width:90px;height:90px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  margin:14px 0;
+  background:#e5e7eb;
+}
+
+/* ===== TABS ===== */
+.tabs{
+  display:flex;
+  gap:20px;
+  border-bottom:1px solid var(--border);
+  margin:16px 0;
+}
+.tab{
+  padding-bottom:8px;
+  cursor:pointer;
+  font-weight:600;
+  color:var(--muted);
+}
+.tab.active{
+  color:var(--primary);
+  border-bottom:3px solid var(--primary);
+}
+.section{display:none}
+.section.active{display:block}
+
+/* ===== INFO ===== */
+.info{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px 18px;
+}
+.label{font-size:12px;color:var(--muted)}
+.value{font-weight:600}
+
+/* ===== COPPA ===== */
+.area{
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:16px;
+  overflow:hidden;
+}
+.area-head{
+  background:#f8fafc;
+  padding:14px 18px;
+  display:flex;
+  justify-content:space-between;
+  font-weight:700;
+  cursor:pointer;
+}
+.area-body{display:none;padding:8px 0}
+.area.open .area-body{display:block}
+
+.coppa-row{
+  display:grid;
+  grid-template-columns:80px 1fr 120px 120px;
+  gap:10px;
+  padding:10px 18px;
+  border-top:1px dashed var(--border);
+  font-size:13px;
+}
+.coppa-code{font-weight:700;color:var(--primary)}
+.coppa-role{
+  font-size:12px;
+  background:#f1f5f9;
+  padding:4px 8px;
+  border-radius:999px;
+  text-align:center;
+}
+.coppa-row input{
+  padding:6px;
+  font-size:12px;
+}
+.save{
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:12px;
+  cursor:pointer;
+}
+.save:disabled{background:#94a3b8}
+
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+th,td{
+  border:1px solid var(--border);
+  padding:8px;
+}
+th{background:#f8fafc}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+  .hero h1{font-size:30px}
+  .grid{grid-template-columns:1fr}
+  .info{grid-template-columns:1fr}
+  .coppa-row{grid-template-columns:1fr}
+}
 </style>
 </head>
+
 <body>
-<div class="topbar"><div class="brand"><div class="logo">PK</div><div><b>PKTAAB</b><div class="brand-sub">Programme Accreditation Monitoring</div></div></div><div class="btn">Dashboard</div></div>
-<div class="hero"><h1>Monitor <span style="color:#7c3aed">programme accreditation</span> progress</h1></div>
-<div class="container"><div id="dean-summary" class="dean-card"></div><div id="grid" class="grid"></div></div>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">P</div>
+    <div>
+      <b>PKTAAB</b>
+      <div class="brand-sub">Programme Accreditation Monitoring</div>
+    </div>
+  </div>
+  <div class="btn">Dashboard</div>
+</div>
+
+<div class="hero">
+  <h1>Monitor <span>programme accreditation</span> progress</h1>
+  <p>Centralised dashboard for COPPA / SRR documentation, student status and programme readiness.</p>
+</div>
+
+<div class="container">
+  <div id="dean-summary" class="dean-card"></div>
+  <div id="grid" class="grid"></div>
+</div>
+
 <script>
+/* ================= CONFIG ================= */
 const STUDENT_API =
 "https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
 
 const APPENDIX_API =
 "https://script.google.com/macros/s/AKfycbyvmcbCmkktJjovaf4sKiF_cuYFEY5oMJwSbBq5Xa3c2Z7vGTb0TetxuECzZ3c6LYBntg/exec";
 
-const norm=s=>(s||"").toLowerCase().trim();
+const norm = s => (s||"").toLowerCase().replace(/\s+/g," ").trim();
 
+/* ================= LOAD ================= */
 async function loadDashboard(){
- const students=await fetch(STUDENT_API).then(r=>r.json());
- const appendixAll=await fetch(APPENDIX_API).then(r=>r.json());
- const programmes={};
+  const students = await fetch(STUDENT_API).then(r=>r.json());
+  const appendixAll = await fetch(APPENDIX_API).then(r=>r.json());
 
- students.forEach(r=>{
-   const p=r["ACADEMIC PROGRAM"];
-   if(!p) return;
+  const programmes = {};
 
-   if(!programmes[p]){
-     programmes[p]={
-       academic:p,
-       bm:r["PROGRAM AKADEMIK"],
-       mqr:r["NO MQR"],
-       centre:r["PEMILIK PROGRAM"],
-       nec:r["NEC"],
-       ketua:r["KETUA PROGRAM"],
-       folder_link:r["FOLDER_LINK"]||"",
-       students:[],
-       aktif:0,
-       graduan:0,
-       appendix:appendixAll.filter(a=>norm(a.PROGRAMS)===norm(p))
-     };
-   }
+  students.forEach(r=>{
+    const p=r["ACADEMIC PROGRAM"];
+    if(!p) return;
 
-   programmes[p].students.push(r);
-   if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[p].aktif++;
-   if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[p].graduan++;
- });
+    if(!programmes[p]){
+  programmes[p]={
+    academic:p,
+    bm:r["PROGRAM AKADEMIK"],
+    mqr:r["NO MQR"],
+    centre:r["PEMILIK PROGRAM"],
+    nec:r["NEC"],
+    ketua:r["KETUA PROGRAM"],
+    folder_link:r["FOLDER_LINK"] || "",
+    students:[],
+    aktif:0,
+    graduan:0,
+    appendix: appendixAll.filter(a=>norm(a.PROGRAMS)===norm(p))
+  };
+}    
 
- renderProgrammes(programmes);
+    programmes[p].students.push(r);
+    if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[p].aktif++;
+    if(r["STATUS PENGAJIAN"]==="BERIJAZAH") programmes[p].graduan++;
+  });
+
+  renderDean(programmes);
+  renderProgrammes(programmes);
 }
 
+/* ===== DEAN SUMMARY ===== */
+function renderDean(programmes){
+  const list=Object.values(programmes);
+  let total=0,done=0,aktif=0,graduan=0;
+
+  list.forEach(p=>{
+    total+=p.appendix.length;
+    done+=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
+    aktif+=p.aktif;
+    graduan+=p.graduan;
+  });
+
+  const percent=total?Math.round(done/total*100):0;
+
+  document.getElementById("dean-summary").innerHTML=`
+    <div class="dean-title">🎓 Dean Overview</div>
+    <div class="dean-grid">
+      <div class="dean-box"><div class="dean-label">Programmes</div><div class="dean-value">${list.length}</div></div>
+      <div class="dean-box"><div class="dean-label">Overall Completion</div><div class="dean-value">${percent}%</div></div>
+      <div class="dean-box"><div class="dean-label">COPPA Items</div><div class="dean-value">${done}/${total}</div></div>
+      <div class="dean-box"><div class="dean-label">Students</div><div class="dean-value">${aktif} Aktif<br>${graduan} Graduan</div></div>
+    </div>`;
+}
+
+/* ===== PROGRAM CARDS ===== */
 function renderProgrammes(programmes){
- const grid=document.getElementById("grid");
- grid.innerHTML="";
- Object.values(programmes).forEach(p=>{
-   const done=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
-   const percent=Math.round(done/(p.appendix.length||1)*100);
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
 
-   const card=document.createElement("div");
-   card.className="card";
-   card.innerHTML=`
-   <h3>${p.academic}</h3>
-   <div>${p.bm}</div>
-   ${p.folder_link?`<p><a class="save" target="_blank" href="${p.folder_link}">📁 Open Accreditation Folder</a></p>`:''}
-   <span class="badge ${p.graduan>0?'ready':'notready'}">${p.graduan>0?'READY':'NOT READY'}</span>
-   <div class="progress">${percent}%</div>
-   <div class="tabs">
-     <div class="tab active" onclick="switchTab(this)">Overview</div>
-     <div class="tab" onclick="switchTab(this)">COPPA / SRR</div>
-     <div class="tab" onclick="switchTab(this)">Students</div>
-   </div>
-   <div class="section active">
-      <div class="info">
-      <div><b>MQR</b><br>${p.mqr}</div>
-      <div><b>Centre</b><br>${p.centre}</div>
-      <div><b>NEC</b><br>${p.nec}</div>
-      <div><b>Programme Head</b><br>${p.ketua}</div>
+  Object.values(programmes).forEach(p => {
+
+    const done = p.appendix.filter(a => a.STATUS === "COMPLETE").length;
+    const percent = Math.round(done / (p.appendix.length || 1) * 100);
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+
+      <h3>${p.academic}</h3>
+      <div class="label">${p.bm}</div>
+
+      ${p.folder_link ? `
+      <div style="margin:12px 0;">
+        <a
+          href="${p.folder_link}"
+          target="_blank"
+          class="save"
+          style="display:inline-block;text-decoration:none;">
+          📁 Open Accreditation Folder
+        </a>
       </div>
-   </div>
-   <div class="section">${renderCoppa(p.appendix,p.academic)}</div>
-   <div class="section">${renderStudents(p.students)}</div>`;
-   grid.appendChild(card);
- });
-}
+      ` : ''}
 
+      <span class="badge ${p.graduan > 0 ? "ready" : "notready"}">
+        ${p.graduan > 0 ? "READY" : "NOT READY"}
+      </span>
+
+      <div
+        class="progress"
+        style="background:conic-gradient(var(--primary) ${percent}%, #e5e7eb ${percent}%);">
+        ${percent}%
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this)">Overview</div>
+        <div class="tab" onclick="switchTab(this)">COPPA / SRR</div>
+        <div class="tab" onclick="switchTab(this)">Students</div>
+      </div>
+
+      <div class="section active">
+        <div class="info">
+          <div>
+            <div class="label">MQR</div>
+            <div class="value">${p.mqr || "-"}</div>
+          </div>
+
+          <div>
+            <div class="label">Centre</div>
+            <div class="value">${p.centre || "-"}</div>
+          </div>
+
+          <div>
+            <div class="label">NEC</div>
+            <div class="value">${p.nec || "-"}</div>
+          </div>
+
+          <div>
+            <div class="label">Programme Head</div>
+            <div class="value">${p.ketua || "-"}</div>
+          </div>
+
+          <div>
+            <div class="label">Active Students</div>
+            <div class="value">${p.aktif}</div>
+          </div>
+
+          <div>
+            <div class="label">Graduated Students</div>
+            <div class="value">${p.graduan}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        ${renderCoppa(p.appendix, p.academic)}
+      </div>
+
+      <div class="section">
+        ${renderStudents(p.students)}
+      </div>
+
+    `;
+
+    grid.appendChild(card);
+
+  });
+}
+ 
+/* ===== COPPA ===== */
 function renderCoppa(list,program){
- return list.map(a=>`
- <div class="coppa-row">
- <div>${a["NO APPENDIX"]}</div>
- <div>${a.ITEM}</div>
- <div class="coppa-role">${a.PIC_ROLE}</div>
- <label class="check-wrap">
- <input type="checkbox" ${a.STATUS==="COMPLETE"?"checked":""}
- onchange="updateStatus('${a["NO APPENDIX"]}','${program}',this.checked)">
- Complete
- </label>
- </div>`).join("");
+  if(!list.length) return `<p class="label">No COPPA items.</p>`;
+
+  const g={};
+  list.forEach(a=>(g[a.APPENDIX]=g[a.APPENDIX]||[]).push(a));
+
+  return Object.keys(g).map(area=>`
+    <div class="area">
+      <div class="area-head" onclick="this.parentNode.classList.toggle('open')">
+        ${area}
+        <span>${g[area].filter(x=>x.STATUS==="COMPLETE").length}/${g[area].length}</span>
+      </div>
+      <div class="area-body">
+        ${g[area].map(a=>`
+          <div class="coppa-row">
+            <div class="coppa-code">${a["NO APPENDIX"]}</div>
+            <div>${a.ITEM}</div>
+            <div class="coppa-role">${a.PIC_ROLE}</div>
+            <label class="check-wrap">
+  <input
+     type="checkbox"
+     ${a.STATUS==="COMPLETE" ? "checked" : ""}
+     onchange="updateStatus(
+        '${a["NO APPENDIX"]}',
+        '${program}',
+        this.checked
+     )">
+  Complete
+</label>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `).join("");
 }
 
+/* ===== SAVE ===== */
 function updateStatus(appendix,program,checked){
- fetch(APPENDIX_API,{
- method:"POST",
- headers:{"Content-Type":"application/json"},
- body:JSON.stringify({appendix,program,status:checked?"COMPLETE":"INCOMPLETE"})
- }).then(()=>loadDashboard());
-}
 
+ fetch(APPENDIX_API,{
+   method:"POST",
+   headers:{
+     "Content-Type":"application/json"
+   },
+   body:JSON.stringify({
+      appendix: appendix,
+      program: program,
+      status: checked
+        ? "COMPLETE"
+        : "INCOMPLETE"
+   })
+ })
+ .then(r=>r.json())
+ .then(()=>{
+    loadDashboard();
+ });
+
+}
+/* ===== STUDENTS ===== */
 function renderStudents(list){
- return `<table><tr><th>No Matrik</th><th>Name</th><th>Status</th></tr>${
- list.map(s=>`<tr><td>${s["NO MATRIK"]||""}</td><td>${s["NAMA PELAJAR"]||""}</td><td>${s["STATUS PENGAJIAN"]||""}</td></tr>`).join("")
- }</table>`;
+  if(!list.length) return `<p class="label">No students.</p>`;
+  return `
+    <table>
+      <tr><th>No Matrik</th><th>Nama Pelajar</th><th>Status</th></tr>
+      ${list.map(s=>`
+        <tr>
+          <td>${s["NO MATRIK"]||"-"}</td>
+          <td>${s["NAMA PELAJAR"]||"-"}</td>
+          <td>${s["STATUS PENGAJIAN"]||"-"}</td>
+        </tr>
+      `).join("")}
+    </table>`;
 }
 
 function switchTab(el){
- const card=el.closest(".card");
- card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
- el.classList.add("active");
- const idx=[...el.parentNode.children].indexOf(el);
- card.querySelectorAll(".section").forEach((s,i)=>s.classList.toggle("active",i===idx));
+  const card=el.closest(".card");
+  card.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  const idx=[...el.parentNode.children].indexOf(el);
+  card.querySelectorAll(".section").forEach((s,i)=>s.classList.toggle("active",i===idx));
 }
+
+loadDashboard();
 </script>
-</body></html>
+
+</body>
+</html>
