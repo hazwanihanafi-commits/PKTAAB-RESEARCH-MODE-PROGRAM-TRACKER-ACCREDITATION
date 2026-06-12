@@ -469,40 +469,28 @@ function renderCoppa(list,program){
 }
 
 /* ===== SAVE ===== */
-function updateStatus(appendix,program,checked){
+function updateStatus(appendix, program, checked){
 
-  console.log({
-    appendix,
-    program,
-    status: checked ? "COMPLETE" : "INCOMPLETE"
-  });
+  const status =
+    checked ? "COMPLETE" : "INCOMPLETE";
 
-  fetch(APPENDIX_API,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      appendix: appendix,
-      program: program,
-      status: checked ? "COMPLETE" : "INCOMPLETE"
+  const url =
+    APPENDIX_API +
+    "?action=update" +
+    "&appendix=" + encodeURIComponent(appendix) +
+    "&program=" + encodeURIComponent(program) +
+    "&status=" + encodeURIComponent(status);
+
+  fetch(url)
+    .then(r => r.text())
+    .then(res => {
+      console.log("Update:", res);
+      loadDashboard();
     })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    console.log("API RESPONSE:",res);
-
-    if(!res.success){
-      alert(res.error || "Update failed");
-      return;
-    }
-
-    loadDashboard();
-  })
-  .catch(err=>{
-    console.error(err);
-    alert("POST failed");
-  });
+    .catch(err => {
+      console.error(err);
+      alert("Update failed");
+    });
 
 }
   /* ===== STUDENTS ===== */
