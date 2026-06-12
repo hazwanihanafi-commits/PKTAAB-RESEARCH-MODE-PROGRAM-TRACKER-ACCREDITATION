@@ -314,28 +314,91 @@ async function loadDashboard(){
 
 /* ===== DEAN SUMMARY ===== */
 function renderDean(programmes){
-  const list=Object.values(programmes);
-  let total=0,done=0,aktif=0,graduan=0;
+
+  const list = Object.values(programmes);
+
+  let total = 0;
+  let done = 0;
+  let aktif = 0;
+  let graduan = 0;
+  let ready = 0;
 
   list.forEach(p=>{
-    total+=p.appendix.length;
-    done+=p.appendix.filter(a=>a.STATUS==="COMPLETE").length;
-    aktif+=p.aktif;
-    graduan+=p.graduan;
+
+    const completed =
+      p.appendix.filter(
+        a => a.STATUS === "COMPLETE"
+      ).length;
+
+    const percent =
+      p.appendix.length
+      ? Math.round(completed / p.appendix.length * 100)
+      : 0;
+
+    if(percent === 100){
+      ready++;
+    }
+
+    total += p.appendix.length;
+    done += completed;
+    aktif += p.aktif;
+    graduan += p.graduan;
+
   });
 
-  const percent=total?Math.round(done/total*100):0;
+  const notReady = list.length - ready;
 
-  document.getElementById("dean-summary").innerHTML=`
-    <div class="dean-title">🎓 Dean Overview</div>
+  const overallPercent =
+    total
+    ? Math.round(done / total * 100)
+    : 0;
+
+  document.getElementById("dean-summary").innerHTML = `
+
+    <div class="dean-title">
+      🎓 Dean Overview
+    </div>
+
     <div class="dean-grid">
-      <div class="dean-box"><div class="dean-label">Programmes</div><div class="dean-value">${list.length}</div></div>
-      <div class="dean-box"><div class="dean-label">Overall Completion</div><div class="dean-value">${percent}%</div></div>
-      <div class="dean-box"><div class="dean-label">COPPA Items</div><div class="dean-value">${done}/${total}</div></div>
-      <div class="dean-box"><div class="dean-label">Students</div><div class="dean-value">${aktif} Aktif<br>${graduan} Graduan</div></div>
-    </div>`;
-}
 
+      <div class="dean-box">
+        <div class="dean-label">Programmes</div>
+        <div class="dean-value">${list.length}</div>
+      </div>
+
+      <div class="dean-box">
+        <div class="dean-label">Ready Programmes</div>
+        <div class="dean-value">${ready}</div>
+      </div>
+
+      <div class="dean-box">
+        <div class="dean-label">Not Ready</div>
+        <div class="dean-value">${notReady}</div>
+      </div>
+
+      <div class="dean-box">
+        <div class="dean-label">Overall Completion</div>
+        <div class="dean-value">${overallPercent}%</div>
+      </div>
+
+      <div class="dean-box">
+        <div class="dean-label">COPPA Items</div>
+        <div class="dean-value">${done}/${total}</div>
+      </div>
+
+      <div class="dean-box">
+        <div class="dean-label">Students</div>
+        <div class="dean-value">
+          ${aktif} Aktif<br>
+          ${graduan} Graduan
+        </div>
+      </div>
+
+    </div>
+
+  `;
+}
+  
 /* ===== PROGRAM CARDS ===== */
 function renderProgrammes(programmes){
   const grid = document.getElementById("grid");
