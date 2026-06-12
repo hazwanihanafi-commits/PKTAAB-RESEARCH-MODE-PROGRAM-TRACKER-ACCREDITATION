@@ -44,8 +44,12 @@ table{width:100%;border-collapse:collapse} th,td{border:1px solid #e5e7eb;paddin
 <div class="hero"><h1>Monitor <span style="color:#7c3aed">programme accreditation</span> progress</h1></div>
 <div class="container"><div id="dean-summary" class="dean-card"></div><div id="grid" class="grid"></div></div>
 <script>
-const STUDENT_API="YOUR_STUDENT_API";
-const APPENDIX_API="YOUR_APPENDIX_API";
+const STUDENT_API =
+"https://script.google.com/macros/s/AKfycbzveYXbtD0_WdOmaX5pXapE4mBZoT9lsMlLSi7nM8iGyErZ69WjJKRoBre9Wy6MTjXbkg/exec";
+
+const APPENDIX_API =
+"https://script.google.com/macros/s/AKfycbyvmcbCmkktJjovaf4sKiF_cuYFEY5oMJwSbBq5Xa3c2Z7vGTb0TetxuECzZ3c6LYBntg/exec";
+
 const norm=s=>(s||"").toLowerCase().trim();
 
 async function loadDashboard(){
