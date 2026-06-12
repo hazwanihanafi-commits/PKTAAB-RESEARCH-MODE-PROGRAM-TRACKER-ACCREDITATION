@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PPKPK – Programme Accreditation Dashboard</title>
+<title>PKTAAB – Programme Accreditation Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -237,7 +237,7 @@ th{background:#f8fafc}
   <div class="brand">
     <div class="logo">P</div>
     <div>
-      <b>PPKPK</b>
+      <b>PKTAAB</b>
       <div class="brand-sub">Programme Accreditation Monitoring</div>
     </div>
   </div>
@@ -276,19 +276,20 @@ async function loadDashboard(){
     if(!p) return;
 
     if(!programmes[p]){
-      programmes[p]={
-        academic:p,
-        bm:r["PROGRAM AKADEMIK"],
-        mqr:r["NO MQR"],
-        centre:r["PEMILIK PROGRAM"],
-        nec:r["NEC"],
-        ketua:r["KETUA PROGRAM"],
-        students:[],
-        aktif:0,
-        graduan:0,
-        appendix: appendixAll.filter(a=>norm(a.PROGRAMS)===norm(p))
-      };
-    }
+  programmes[p]={
+    academic:p,
+    bm:r["PROGRAM AKADEMIK"],
+    mqr:r["NO MQR"],
+    centre:r["PEMILIK PROGRAM"],
+    nec:r["NEC"],
+    ketua:r["KETUA PROGRAM"],
+    folder_link:r["FOLDER_LINK"] || "",
+    students:[],
+    aktif:0,
+    graduan:0,
+    appendix: appendixAll.filter(a=>norm(a.PROGRAMS)===norm(p))
+  };
+}    
 
     programmes[p].students.push(r);
     if(r["STATUS PENGAJIAN"]==="AKTIF") programmes[p].aktif++;
@@ -334,13 +335,90 @@ function renderProgrammes(programmes){
 
     const card=document.createElement("div");
     card.className="card";
-    card.innerHTML=`
-      <h3>${p.academic}</h3>
-      <div class="label">${p.bm}</div>
 
-      <span class="badge ${p.graduan>0?"ready":"notready"}">
-        ${p.graduan>0?"READY":"NOT READY"}
-      </span>
+    card.innerHTML=`
+
+<h3>${p.academic}</h3>
+<div class="label">${p.bm}</div>
+
+${p.folder_link ? `
+<div style="margin:12px 0;">
+  <a href="${p.folder_link}"
+     target="_blank"
+     class="save"
+     style="display:inline-block;text-decoration:none;">
+     📁 Open Accreditation Folder
+  </a>
+</div>
+` : ''}
+
+<span class="badge ${p.graduan>0?"ready":"notready"}">
+  ${p.graduan>0?"READY":"NOT READY"}
+</span>
+
+<div class="progress"
+style="background:conic-gradient(var(--primary) ${percent}%,#e5e7eb ${percent}%)">
+${percent}%
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(this)">Overview</div>
+  <div class="tab" onclick="switchTab(this)">COPPA / SRR</div>
+  <div class="tab" onclick="switchTab(this)">Students</div>
+</div>
+
+<div class="section active">
+  <div class="info">
+    <div><div class="label">MQR</div><div class="value">${p.mqr}</div></div>
+    <div><div class="label">Centre</div><div class="value">${p.centre}</div></div>
+    <div><div class="label">NEC</div><div class="value">${p.nec}</div></div>
+    <div><div class="label">Programme Head</div><div class="value">${p.ketua}</div></div>
+    <div><div class="label">Active Students</div><div class="value">${p.aktif}</div></div>
+    <div><div class="label">Graduated Students</div><div class="value">${p.graduan}</div></div>
+  </div>
+</div>
+
+<div class="section">
+  ${renderCoppa(p.appendix,p.academic)}
+</div>
+
+<div class="section">
+  ${renderStudents(p.students)}
+</div>
+
+`;
+    
+  <!-- FOLDER LINK -->
+  <div style="margin:12px 0;">
+    <input
+      type="text"
+      id="folder-${p.academic}"
+      placeholder="Paste Accreditation Folder Link"
+      value="${p.folder_link || ''}"
+      style="width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;"
+    >
+
+    <button
+      class="save"
+      style="margin-top:8px;"
+      onclick="saveFolderLink('${p.academic}')">
+      Save Folder
+    </button>
+
+    ${p.folder_link ? `
+      <a href="${p.folder_link}"
+         target="_blank"
+         class="save"
+         style="display:inline-block;margin-top:8px;text-decoration:none;">
+         📁 Open Folder
+      </a>
+    ` : ''}
+  </div>
+
+  <span class="badge ${p.graduan>0?"ready":"notready"}">
+    ${p.graduan>0?"READY":"NOT READY"}
+  </span>
+`
 
       <div class="progress"
         style="background:conic-gradient(var(--primary) ${percent}%,#e5e7eb ${percent}%)">
@@ -390,9 +468,17 @@ function renderCoppa(list,program){
             <div class="coppa-code">${a["NO APPENDIX"]}</div>
             <div>${a.ITEM}</div>
             <div class="coppa-role">${a.PIC_ROLE}</div>
-            <input id="link-${program}-${a["NO APPENDIX"]}" value="${a.DOC_LINK||""}">
-            <button class="save"
-              onclick="saveLink('${a["NO APPENDIX"]}','${program}')">Save</button>
+            <label class="check-wrap">
+  <input
+     type="checkbox"
+     ${a.STATUS==="COMPLETE" ? "checked" : ""}
+     onchange="updateStatus(
+        '${a["NO APPENDIX"]}',
+        '${program}',
+        this.checked
+     )">
+  Complete
+</label>
           </div>
         `).join("")}
       </div>
@@ -401,24 +487,27 @@ function renderCoppa(list,program){
 }
 
 /* ===== SAVE ===== */
-function saveLink(appendix,program){
-  const input=document.getElementById(`link-${program}-${appendix}`);
-  const link=input.value.trim();
-  if(!link) return alert("Paste document link");
+function updateStatus(appendix,program,checked){
 
-  fetch(APPENDIX_API,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ appendix, program, doc_link: link })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(!res.success) throw res;
+ fetch(APPENDIX_API,{
+   method:"POST",
+   headers:{
+     "Content-Type":"application/json"
+   },
+   body:JSON.stringify({
+      appendix: appendix,
+      program: program,
+      status: checked
+        ? "COMPLETE"
+        : "INCOMPLETE"
+   })
+ })
+ .then(r=>r.json())
+ .then(()=>{
     loadDashboard();
-  })
-  .catch(()=>alert("Save failed"));
-}
+ });
 
+}
 /* ===== STUDENTS ===== */
 function renderStudents(list){
   if(!list.length) return `<p class="label">No students.</p>`;
